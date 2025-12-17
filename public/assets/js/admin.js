@@ -199,15 +199,18 @@ function setupDeleteModal() {
     btnConfirm.onclick = async () => {
       if (!playerToDeleteId) return;
       try {
-        const response = await fetch(`/api/admin/players${playerToDeleteId}`, {
+        // PERBAIKAN: Tambahkan "/" setelah players
+        const response = await fetch(`/api/admin/players/${playerToDeleteId}`, {
           method: 'DELETE',
         });
         if (response.ok) {
           modal.classList.remove('show');
-          loadDashboardData(); // Refresh data
+          loadDashboardData();
+        } else {
+          alert('Gagal menghapus data dari server.');
         }
       } catch (err) {
-        alert('Gagal menghapus.');
+        alert('Terjadi kesalahan koneksi.');
       }
     };
   }
@@ -237,20 +240,22 @@ function setupClearAllData() {
 
   if (btnConfirm) {
     btnConfirm.onclick = async function () {
-      // Animasi loading
       const originalText = this.textContent;
       this.textContent = 'Sedang Mereset...';
       this.disabled = true;
 
       try {
-        const response = await fetch('/api/admin/players', {
+        // PERBAIKAN: Sesuaikan dengan endpoint reset-all di backend
+        const response = await fetch('/api/admin/reset-all', {
           method: 'DELETE',
         });
 
         if (response.ok) {
           modal.classList.remove('show');
           alert('Berhasil! Seluruh data database telah dikosongkan.');
-          loadDashboardData(); // Refresh tampilan
+          loadDashboardData();
+        } else {
+          alert('Gagal mereset data.');
         }
       } catch (err) {
         alert('Gagal mereset data. Periksa koneksi backend.');
