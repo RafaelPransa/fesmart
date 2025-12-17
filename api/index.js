@@ -73,6 +73,29 @@ app.get("/api/admin/players", async (req, res) => {
   }
 });
 
+// --- JALUR KHUSUS LOGIN ADMIN (Tidak mengganggu siswa) ---
+app.post("/api/admin/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Hanya mencari user yang username, password, DAN role-nya 'admin'
+    const result = await pool.query(
+      "SELECT id, username, role FROM users WHERE username = $1 AND password = $2 AND role = 'admin'",
+      [username, password]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ success: true, user: result.rows[0] });
+    } else {
+      res
+        .status(401)
+        .json({ success: false, error: "Kredensial Admin Salah!" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // ==========================================
 // 3. ROUTE: Login / Register Siswa
 // ==========================================

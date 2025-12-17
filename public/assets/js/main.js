@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function playSelectionSound() {
+  function playSelectionSound()z {
     // Optional: Add sound effect for character selection
   }
 
