@@ -42,23 +42,71 @@ document.addEventListener('DOMContentLoaded', function () {
   const soundClick = document.getElementById('sound-click');
   const soundCoolClick = document.getElementById('cool-click');
   const soundGameClick = document.getElementById('game-click');
+  const teksOpeningSound = document.getElementById('teks-opening-sound');
 
   let isSoundOn = localStorage.getItem('fesmart_sound') !== 'off';
 
-  window.playClickSound = () => {
-    if (isSoundOn && soundClick) soundClick.play().catch(() => {});
-  };
-  window.playCoolClickSound = () => {
-    if (isSoundOn && soundCoolClick) soundCoolClick.play().catch(() => {});
-  };
-  window.playGameClickSound = () => {
-    if (isSoundOn && soundGameClick) soundGameClick.play().catch(() => {});
+  // --- Fungsi Global Audio ---
+  window.playClickSound = function () {
+    if (isSoundOn && soundClick) {
+      soundClick.currentTime = 0;
+      soundClick.play().catch((e) => console.log('Click sound failed:', e));
+    }
   };
 
-  if (isSoundOn && bgMusic) {
-    bgMusic.volume = 0.5;
-    bgMusic.play().catch(() => {});
-  }
+  window.playCoolClickSound = function () {
+    if (isSoundOn && soundCoolClick) {
+      soundCoolClick.currentTime = 0;
+      soundCoolClick.play().catch((e) => console.log('Cool click failed:', e));
+    }
+  };
+
+  window.playGameClickSound = function () {
+    if (isSoundOn && soundGameClick) {
+      soundGameClick.currentTime = 0;
+      soundGameClick.play().catch((e) => console.log('Game click failed:', e));
+    }
+  };
+
+  window.playTeksOpeningSound = function () {
+    if (isSoundOn && teksOpeningSound) {
+      teksOpeningSound.currentTime = 0;
+      teksOpeningSound
+        .play()
+        .catch((e) => console.log('Text sound failed:', e));
+    }
+  };
+
+  window.playNotificationSound = function () {
+    if (isSoundOn && notificationSound) {
+      notificationSound.currentTime = 0;
+      notificationSound
+        .play()
+        .catch((e) => console.log('Notif sound failed:', e));
+    }
+  };
+
+  window.toggleSound = function () {
+    isSoundOn = !isSoundOn;
+    localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
+
+    const soundBtn = document.querySelector(
+      '.control-btn[onclick="toggleSound()"]'
+    );
+    if (soundBtn) {
+      soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
+    }
+
+    if (isSoundOn) playBackgroundMusic();
+    else if (bgMusic) bgMusic.pause();
+  };
+
+  window.playBackgroundMusic = function () {
+    if (isSoundOn && bgMusic && bgMusic.paused) {
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch((e) => console.log('BG Music failed:', e));
+    }
+  };
 
   function getCharacterImage(characterId, emotion = 'normal') {
     const id = characterId || 'siti';
@@ -87,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
           teksOpening.innerHTML += char;
           if (char === ':' && charIndex < 15)
             teksOpening.innerHTML += '</strong>';
+          if (charIndex % 3 === 0) window.playCoolClickSound(); // Sound effect
           charIndex++;
           setTimeout(typeLine, speed);
         } else {
