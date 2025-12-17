@@ -74,7 +74,7 @@ app.get("/api/admin/players", async (req, res) => {
 });
 
 // ==========================================
-// 3. ROUTE: Login / Register Siswa
+// 3. ROUTE: Login admin
 // ==========================================
 app.post("/api/login", async (req, res) => {
   try {
@@ -103,7 +103,7 @@ app.post("/api/login", async (req, res) => {
       // karena role atau username tidak cocok.
       res.status(401).json({
         success: false,
-        error: "Kredensial salah atau Anda bukan Admin!",
+        error: "Username atau Password Salah!",
       });
     }
   } catch (err) {
@@ -207,6 +207,32 @@ app.delete("/api/admin/reset-all", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Gagal mereset database" });
+  }
+});
+
+// --- ENDPOINT MULAI GAME UNTUK PEMAIN ---
+app.post("/api/player/start", async (req, res) => {
+  const { username } = req.body;
+  try {
+    // Cari user student, jika tidak ada maka buat baru (Auto-Register)
+    let result = await pool.query(
+      "SELECT id, username FROM users WHERE username = $1 AND role = 'student'",
+      [username]
+    );
+
+    let user = result.rows[0];
+    if (!user) {
+      const newUser = await pool.query(
+        "INSERT INTO users (username, role) VALUES ($1, 'student') RETURNING id, username",
+        [username]
+      );
+      user = newUser.rows[0];
+    }
+    res.json({ success: true, user });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, error: "Gagal memproses data pemain" });
   }
 });
 
