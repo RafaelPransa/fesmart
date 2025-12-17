@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function () {
           kuisTotalScore += k.score;
         }
 
-        window.playClickSound();
+        window.playCoolClickSound();
         kuisIndex++;
         renderSoal();
       };
