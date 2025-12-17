@@ -354,9 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function playSelectionSound()z {
-    // Optional: Add sound effect for character selection
-  }
 
   // --- KONEKSI KE BACKEND (FUNGSI UTAMA) ---
   async function startGame() {

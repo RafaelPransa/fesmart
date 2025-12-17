@@ -89,7 +89,7 @@ app.post("/api/admin/login", async (req, res) => {
     } else {
       res
         .status(401)
-        .json({ success: false, error: "Kredensial Admin Salah!" });
+        .json({ success: false, error: "Username atau Password Salah!" });
     }
   } catch (err) {
     res.status(500).json({ error: "Server error" });
