@@ -77,6 +77,55 @@ async function loadDashboardData() {
   }
 }
 
+// --- FUNGSI EKSPOR CSV ---
+window.exportData = function () {
+  if (allPlayersData.length === 0) {
+    alert('Tidak ada data untuk diekspor.');
+    return;
+  }
+
+  // 1. Tentukan Header CSV
+  const headers = [
+    'Nama Pemain',
+    'Karakter',
+    'Progres Terakhir',
+    'Total Pengetahuan',
+    'Total Kepatuhan',
+    'HB Akhir (g/dL)',
+    'Status',
+  ];
+
+  // 2. Map data dari allPlayersData ke format baris CSV
+  const csvRows = allPlayersData.map((user) => {
+    return [
+      `"${user.username || 'Anonymous'}"`,
+      'Petualang',
+      `"${user.lastPlayedDay || 'Hari 1'}"`,
+      user.totalKnowledge || 0,
+      user.totalCompliance || 0,
+      parseFloat(user.finalHb || 0).toFixed(1),
+      user.is_completed ? 'Selesai' : 'Proses',
+    ].join(',');
+  });
+
+  // 3. Gabungkan header dan baris dengan baris baru (\n)
+  const csvContent = [headers.join(','), ...csvRows].join('\n');
+
+  // 4. Proses Download File
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  // Penamaan file otomatis dengan tanggal
+  const date = new Date().toISOString().split('T')[0];
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Data_Pemain_FeSmart_${date}.csv`);
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 // --- FUNGSI RENDER TABEL (Penting untuk Filter) ---
 function renderTable(players) {
   const tableBody = document.getElementById('table-body');

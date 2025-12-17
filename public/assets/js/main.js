@@ -134,9 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Validate form
       validateForm();
-
-      // Play selection sound effect
-      playSelectionSound();
     });
   });
 
