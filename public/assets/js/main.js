@@ -329,29 +329,15 @@ document.addEventListener('DOMContentLoaded', function () {
     updateStartButtonState();
   }
 
-  function showValidation(message) {
-    const container = document.querySelector('.input-group'); // Sesuaikan dengan class pembungkus input Anda
+  function showValidationMessage(message, type) {
+    validationMessage.textContent = message;
+    validationMessage.className = 'validation-message';
 
-    // Hapus pesan lama jika ada
-    const oldMsg = document.querySelector('.validation-msg');
-    if (oldMsg) oldMsg.remove();
-
-    // Buat elemen pesan baru
-    const msgEl = document.createElement('div');
-    msgEl.className = 'validation-msg';
-    msgEl.innerHTML = `<i class="ph ph-warning-circle"></i> ${message}`;
-
-    // Styling instan agar cantik
-    msgEl.style.color = '#ea5455';
-    msgEl.style.fontSize = '12px';
-    msgEl.style.marginTop = '8px';
-    msgEl.style.fontWeight = '500';
-    msgEl.style.display = 'flex';
-    msgEl.style.alignItems = 'center';
-    msgEl.style.gap = '5px';
-    msgEl.style.animation = 'shake 0.5s ease';
-
-    container.appendChild(msgEl);
+    if (type === 'error') {
+      validationMessage.classList.add('validation-error');
+    } else if (type === 'success') {
+      validationMessage.classList.add('validation-success');
+    }
   }
 
   function updateStartButtonState() {
@@ -372,52 +358,73 @@ document.addEventListener('DOMContentLoaded', function () {
     // Optional: Add sound effect for character selection
   }
 
-  // --- FUNGSI UTAMA: START GAME (MENGGANTIKAN YANG LAMA) ---
+  // --- KONEKSI KE BACKEND (FUNGSI UTAMA) ---
   async function startGame() {
-    const usernameInput = document.getElementById('player-name-input');
-    const username = usernameInput ? usernameInput.value.trim() : '';
+    if (!isFormValid || !selectedCharacter) return;
 
-    // Validasi Sederhana di Frontend
-    if (!username) {
-      showValidation('Masukkan nama kamu terlebih dahulu!');
-      return;
-    }
+    // 1. Tampilkan Loading
+    if (loadingContainer) loadingContainer.classList.add('show');
 
-    const btnStart = document.querySelector('.btn-primary-start');
-    const originalText = btnStart.innerHTML;
+    const username = isAnonymous
+      ? 'Petualang FeSmart'
+      : usernameInput.value.trim();
 
-    // UI Loading
-    btnStart.innerHTML =
-      '<i class="ph ph-circle-notch animate-spin"></i> Memuat...';
-    btnStart.disabled = true;
+    const localUserData = {
+      username: username,
+      character: selectedCharacter,
+      isAnonymous: isAnonymous,
+      totalKnowledge: 0,
+      totalCompliance: 0,
+      progress: {},
+    };
 
     try {
-      // PERBAIKAN: Gunakan rute khusus player, bukan /api/login admin
-      const response = await fetch('/api/player/start', {
+      // 3. FETCH KE API LOGIN
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({
+          username: username,
+          character: selectedCharacter,
+        }),
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
-      if (response.ok && data.success) {
-        // Simpan sesi pemain
-        localStorage.setItem('fesmart_user_id', data.user.id);
-        localStorage.setItem('fesmart_username', data.user.username);
+      if (result.success) {
+        console.log('Login Sukses:', result);
 
-        // Redirect ke petualangan hari pertama
-        window.location.href = 'hari1.html';
+        // ============================================================
+        // PERBAIKAN BUG: BERSIHKAN SISA MEMORI HARI 3-5
+        // ============================================================
+        localStorage.removeItem('fesmart_current_day_loop');
+        // ============================================================
+
+        // 4. Simpan Session ID
+        const sessionData = {
+          ...localUserData,
+          id: result.user.id,
+          db_username: result.user.username,
+        };
+
+        localStorage.setItem(
+          'fesmart_user_session',
+          JSON.stringify(sessionData)
+        );
+        localStorage.setItem('fesmart_user', JSON.stringify(sessionData));
+
+        // 5. Redirect ke Hari 1
+        setTimeout(() => {
+          window.location.href = 'hari1.html';
+        }, 1000);
       } else {
-        showValidation(data.error || 'Gagal masuk ke game.');
-        btnStart.innerHTML = originalText;
-        btnStart.disabled = false;
+        throw new Error(result.error || 'Gagal Login');
       }
     } catch (error) {
-      console.error('Error:', error);
-      showValidation('Koneksi server bermasalah.');
-      btnStart.innerHTML = originalText;
-      btnStart.disabled = false;
+      console.error('Error backend:', error);
+      if (loadingContainer) loadingContainer.classList.remove('show');
+      showValidation('Gagal terhubung ke Server.', 'error');
+      alert('Gagal terhubung ke server backend.');
     }
   }
 

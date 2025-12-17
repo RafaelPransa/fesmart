@@ -74,41 +74,32 @@ app.get("/api/admin/players", async (req, res) => {
 });
 
 // ==========================================
-// 3. ROUTE: Login admin
+// 3. ROUTE: Login / Register Siswa
 // ==========================================
 app.post("/api/login", async (req, res) => {
+  const { username, character } = req.body;
   try {
-    const { username, password } = req.body;
-
-    // QUERY DIPERKETAT:
-    // Mencari user yang username DAN passwordnya cocok, DAN role-nya harus 'admin'
-    const result = await pool.query(
-      "SELECT id, username, role FROM users WHERE username = $1 AND password = $2 AND role = 'admin'",
-      [username, password]
+    const checkUser = await pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username]
     );
-
-    if (result.rows.length > 0) {
-      // Jika ditemukan
-      const user = result.rows[0];
-      res.json({
-        success: true,
-        user: {
-          id: user.id,
-          username: user.username,
-          role: user.role,
-        },
-      });
+    let user;
+    if (checkUser.rows.length > 0) {
+      user = checkUser.rows[0];
     } else {
-      // Jika username ngasal tapi password benar, result.rows akan kosong
-      // karena role atau username tidak cocok.
-      res.status(401).json({
-        success: false,
-        error: "Username atau Password Salah!",
-      });
+      const newUser = await pool.query(
+        "INSERT INTO users (username, password, role) VALUES ($1, '123', 'student') RETURNING *",
+        [username]
+      );
+      user = newUser.rows[0];
     }
+    res.json({
+      success: true,
+      user: { id: user.id, username: user.username, character: character },
+    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error saat login" });
+    console.error(err);
+    res.status(500).json({ error: "Terjadi kesalahan server" });
   }
 });
 
@@ -207,32 +198,6 @@ app.delete("/api/admin/reset-all", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Gagal mereset database" });
-  }
-});
-
-// --- ENDPOINT MULAI GAME UNTUK PEMAIN ---
-app.post("/api/player/start", async (req, res) => {
-  const { username } = req.body;
-  try {
-    // Cari user student, jika tidak ada maka buat baru (Auto-Register)
-    let result = await pool.query(
-      "SELECT id, username FROM users WHERE username = $1 AND role = 'student'",
-      [username]
-    );
-
-    let user = result.rows[0];
-    if (!user) {
-      const newUser = await pool.query(
-        "INSERT INTO users (username, role) VALUES ($1, 'student') RETURNING id, username",
-        [username]
-      );
-      user = newUser.rows[0];
-    }
-    res.json({ success: true, user });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, error: "Gagal memproses data pemain" });
   }
 });
 
