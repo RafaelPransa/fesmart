@@ -77,29 +77,38 @@ app.get("/api/admin/players", async (req, res) => {
 // 3. ROUTE: Login / Register Siswa
 // ==========================================
 app.post("/api/login", async (req, res) => {
-  const { username, character } = req.body;
   try {
-    const checkUser = await pool.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username]
+    const { username, password } = req.body;
+
+    // QUERY DIPERKETAT:
+    // Mencari user yang username DAN passwordnya cocok, DAN role-nya harus 'admin'
+    const result = await pool.query(
+      "SELECT id, username, role FROM users WHERE username = $1 AND password = $2 AND role = 'admin'",
+      [username, password]
     );
-    let user;
-    if (checkUser.rows.length > 0) {
-      user = checkUser.rows[0];
+
+    if (result.rows.length > 0) {
+      // Jika ditemukan
+      const user = result.rows[0];
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+        },
+      });
     } else {
-      const newUser = await pool.query(
-        "INSERT INTO users (username, password, role) VALUES ($1, '123', 'student') RETURNING *",
-        [username]
-      );
-      user = newUser.rows[0];
+      // Jika username ngasal tapi password benar, result.rows akan kosong
+      // karena role atau username tidak cocok.
+      res.status(401).json({
+        success: false,
+        error: "Kredensial salah atau Anda bukan Admin!",
+      });
     }
-    res.json({
-      success: true,
-      user: { id: user.id, username: user.username, character: character },
-    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error saat login" });
   }
 });
 
