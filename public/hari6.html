@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart - Hari 6</title>
+    <link rel="stylesheet" href="assets/css/general.css" />
+    <link rel="stylesheet" href="assets/css/hari6.css" />
+  </head>
+  <body>
+    <div class="container-opening">
+      <div class="opening-background">
+        <h1 class="opening-title">Hari - 6</h1>
+        <div class="opening-subtitle">Evaluasi Kebiasaan</div>
+      </div>
+    </div>
+
+    <div class="scene-opening">
+      <div class="character" id="character-main">
+        <img id="main-character-img" src="" alt="Karakter Utama" />
+      </div>
+
+      <div class="container-teks-opening">
+        <div class="teks-opening"></div>
+
+        <button type="button" id="btn-start" class="btn-hidden">
+          Mulai Evaluasi
+        </button>
+      </div>
+
+      <div class="character" id="character-guru">
+        <img src="assets/images/characters/guru.png" alt="Guru UKS" />
+      </div>
+    </div>
+
+    <div class="scene-kuis" id="scene-kuis-menengah" style="display: none">
+      <div class="character-kuis" id="character-main-kuis">
+        <img
+          id="main-character-kuis-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="kuis-container">
+        <div class="kuis-header">
+          <h2>📝 Tes Pengetahuan Menengah - Hari 6</h2>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">1/3</span>
+          </div>
+        </div>
+
+        <div class="kuis-content" id="kuis-content"></div>
+
+        <div class="navigation-buttons">
+          <button id="btn-next" class="btn-nav">Selanjutnya ➡</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-simulasi" id="scene-simulasi-fe" style="display: none">
+      <div class="character-simulasi" id="character-guru-simulasi">
+        <img src="assets/images/characters/guru.png" alt="Guru UKS" />
+      </div>
+      <div class="simulasi-container">
+        <div class="simulasi-header">
+          <h2>🤝 Program Minum Tablet Fe Bersama</h2>
+        </div>
+
+        <div class="simulasi-content">
+          <div class="instruction-card">
+            <p>
+              Guru UKS mengajak kamu dan teman-teman minum tablet Fe bersama
+              mingguan.
+            </p>
+            <p>
+              <strong>Pilih keputusanmu:</strong>
+            </p>
+          </div>
+
+          <div class="pilihan-simulasi">
+            <button
+              id="btn-ikut"
+              class="btn-primary btn-large"
+              data-pilihan="ikut"
+            >
+              ✅ Ikut (Minum Tablet Fe)
+            </button>
+            <button
+              id="btn-tidak-ikut"
+              class="btn-secondary btn-large"
+              data-pilihan="tidak-ikut"
+            >
+              ❌ Tidak Ikut
+            </button>
+          </div>
+
+          <p id="simulasi-feedback"></p>
+
+          <button
+            id="btn-lanjut-hari6"
+            class="btn-primary btn-large btn-hidden"
+            style="margin-top: 30px; border-radius: 12px"
+          >
+            Selesai Hari 6
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-hasil" id="scene-hasil-akhir" style="display: none">
+      <div class="character-hasil" id="character-main-hasil">
+        <img id="main-character-hasil-img" src="" alt="Karakter Utama Hasil" />
+      </div>
+      <div class="hasil-container">
+        <div class="hasil-card">
+          <h2>🎉 Selamat! Hari 6 Selesai</h2>
+
+          <div class="hasil-message" id="hasil-message"></div>
+
+          <button id="btn-next-day" class="btn-primary">
+            Lanjut ke Hari 7
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-controls">
+      <button class="control-btn" onclick="window.location.href='index.html'">
+        🏠 Halaman Utama
+      </button>
+      <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>
+    </div>
+    <div id="container-btn-mobile"></div>
+    <audio id="background-music" loop>
+      <source src="assets/audio/background-music.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="sound-click" preload="auto">
+      <source src="assets/audio/select-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="cool-click" preload="auto">
+      <source src="assets/audio/cool-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-click">
+      <source src="assets/audio/game-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="notification-sound">
+      <source src="assets/audio/notification.wav" type="audio/wav" />
+    </audio>
+    <script src="assets/js/hari6.js"></script>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart - Hari 3-5</title>
+    <link rel="stylesheet" href="assets/css/general.css" />
+    <link rel="stylesheet" href="assets/css/hari3-5.css" />
+  </head>
+  <body>
+    <div class="container-opening">
+      <div class="opening-background">
+        <h1 class="opening-title" id="hari-title">Hari - 3</h1>
+        <div class="opening-subtitle">Soal Faktor</div>
+      </div>
+    </div>
+
+    <div class="scene-opening">
+      <div class="character" id="character-main">
+        <img id="main-character-img" src="" alt="Karakter Utama" />
+      </div>
+
+      <div class="container-teks-opening">
+        <div class="teks-opening"></div>
+        <button type="button" id="btn-start" class="btn-hidden">
+          Mulai Aktivitas Hari <span id="current-day-btn">3</span>
+        </button>
+      </div>
+
+      <div class="character" id="character-teman">
+        <img src="assets/images/characters/teman-npc.png" alt="Teman" />
+      </div>
+    </div>
+
+    <div class="scene-pilih-menu" style="display: none">
+      <div class="pilih-menu-container">
+        <div class="character-game" id="character-pilih-menu">
+          <img
+            id="main-character-menu-img"
+            src=""
+            alt="Karakter Utama Pilih Menu"
+          />
+        </div>
+        <div class="pilih-menu-header">
+          <h2>🍽️ Pilih Menu Zat Besi & Penghambat</h2>
+        </div>
+        <div class="menu-game-board">
+          <p class="menu-instructions">
+            Pilih dan pisahkan mana makanan **Sumber Zat Besi** dan mana
+            **Penghambat Penyerapan** dengan cara tarik makanan ke tempat yang
+            di inginkan!
+          </p>
+
+          <div class="menu-options" id="menu-options-container"></div>
+
+          <div class="drop-areas">
+            <div
+              class="drop-area negative"
+              data-category="penghambat"
+              ondragover="event.preventDefault();"
+            >
+              <h4>❌ Penghambat Penyerapan Fe</h4>
+              <div class="dropped-items" id="drop-penghambat"></div>
+            </div>
+            <div
+              class="drop-area positive"
+              data-category="zat-besi"
+              ondragover="event.preventDefault();"
+            >
+              <h4>✅ Sumber Zat Besi</h4>
+              <div class="dropped-items" id="drop-zat-besi"></div>
+            </div>
+          </div>
+          <div class="game-feedback" id="menu-game-feedback"></div>
+          <button id="btn-submit-menu" class="btn-primary btn-large">
+            Cek Hasil Pilihan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-aktivitas" style="display: none">
+      <div class="character-simulasi" id="character-main-simulasi">
+        <img
+          id="main-character-simulasi-img"
+          src=""
+          alt="Karakter Utama Simulasi"
+        />
+      </div>
+      <div class="aktivitas-container">
+        <div class="aktivitas-header">
+          <h2 id="aktivitas-header-title">🏃 Aktivitas Harian - Hari 4</h2>
+        </div>
+        <div class="daily-stats">
+          <div class="daily-stat-item">
+            <span class="stat-label"
+              >Energi <span id="aktivitas-character-name"></span>:</span
+            >
+            <span class="stat-value" id="aktivitas-energy-value">80%</span>
+          </div>
+          <div class="daily-stat-item">
+            <span class="stat-label">Tingkat Pengetahuan:</span>
+            <span class="stat-value" id="knowledge-value">0</span>
+          </div>
+        </div>
+
+        <div class="daily-action-card" id="daily-action-card"></div>
+
+        <button
+          id="btn-next-step"
+          class="btn-primary btn-large"
+          style="margin-top: 30px"
+        >
+          Lanjut ke Kuis Harian
+        </button>
+      </div>
+    </div>
+
+    <div class="scene-kuis" id="scene-kuis-harian" style="display: none">
+      <div class="character-kuis" id="character-main-kuis">
+        <img
+          id="main-character-kuis-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="kuis-container">
+        <div class="kuis-header">
+          <h2 id="kuis-harian-title">📚 Kuis Harian - Hari 5</h2>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="kuis-progress-fill"></div>
+            </div>
+            <span class="progress-text" id="kuis-progress-text">1/1</span>
+          </div>
+        </div>
+
+        <div class="kuis-content" id="kuis-harian-content"></div>
+
+        <div class="navigation-buttons">
+          <button id="btn-check-answer" class="btn-primary btn-large">
+            Cek Jawaban
+          </button>
+          <button
+            id="btn-finish-day"
+            class="btn-primary btn-large"
+            style="display: none"
+          >
+            Selesai Hari <span id="finish-day-btn">3</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-hasil" style="display: none">
+      <div class="character-hasil" id="character-main-kuis">
+        <img
+          id="main-character-hasil-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="hasil-container">
+        <div class="hasil-card">
+          <h2 id="final-result-title">🎉 Selamat! Hari 3-5 Selesai</h2>
+
+          <div class="hasil-message" id="hasil-message"></div>
+
+          <button id="btn-next-day" class="btn-primary">
+            Lanjut ke Hari Berikutnya
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-controls">
+      <button class="control-btn" onclick="window.location.href='index.html'">
+        🏠 Halaman Utama
+      </button>
+      <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>
+    </div>
+
+    <div id="container-btn-mobile"></div>
+
+    <audio id="background-music" loop>
+      <source src="assets/audio/background-music.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="sound-click" preload="auto">
+      <source src="assets/audio/select-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="cool-click" preload="auto">
+      <source src="assets/audio/cool-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-click">
+      <source src="assets/audio/game-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="notification-sound">
+      <source src="assets/audio/notification.wav" type="audio/wav" />
+    </audio>
+    <script src="assets/js/hari3-5.js"></script>
+  </body>
+</html>

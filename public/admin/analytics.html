@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analitik FeSmart</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/admin.css" />
+  </head>
+  <body>
+    <script>
+      if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+        window.location.href = 'admin-login.html';
+      }
+    </script>
+
+    <div class="admin-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="ph-fill ph-first-aid-kit"></i>
+            <span>FeSmart Admin</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="index.html"><i class="ph ph-users"></i> Data Pemain</a>
+            </li>
+            <li class="active">
+              <a href="analytics.html"
+                ><i class="ph ph-chart-line-up"></i> Analitik</a
+              >
+            </li>
+            <li>
+              <a href="../index.html"
+                ><i class="ph ph-house"></i> Kembali ke Game</a
+              >
+            </li>
+            <li>
+              <a href="admin-login.html" id="btn-logout"
+                ><i class="ph ph-sign-out"></i> Keluar (Logout)</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="page-title">
+            <h1>Analitik Performa</h1>
+            <p>Visualisasi data pembelajaran dan kesehatan pemain.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px">
+            <button
+              id="btn-reset"
+              class="btn-export"
+              style="background: #e67e22"
+            >
+              <i class="ph ph-arrow-counter-clockwise"></i> Reset Data Asli
+            </button>
+
+            <button
+              id="btn-simulate"
+              class="btn-export"
+              style="background: #9b59b6"
+            >
+              <i class="ph ph-magic-wand"></i> Simulasi Data Demo
+            </button>
+          </div>
+        </header>
+
+        <div class="analytics-grid">
+          <div class="chart-card large">
+            <div class="chart-header">
+              <h3>📈 Tren Peningkatan Pengetahuan (Rata-rata)</h3>
+            </div>
+            <div class="chart-body">
+              <canvas id="knowledgeTrendChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🩸 Distribusi Level HB Akhir</h3>
+            </div>
+            <div class="chart-body">
+              <canvas id="hbDistributionChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>💊 Tingkat Kepatuhan Minum Fe</h3>
+            </div>
+            <div class="chart-body">
+              <canvas id="complianceChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card large">
+            <div class="chart-header">
+              <h3>🔗 Hubungan Pengetahuan vs. Kepatuhan</h3>
+              <p class="chart-subtitle">
+                Apakah pengetahuan tinggi menjamin kepatuhan tinggi?
+              </p>
+            </div>
+            <div class="chart-body">
+              <canvas id="correlationChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../assets/js/admin-analytics.js"></script>
+    <script src="../assets/js/session.js"></script>
+  </body>
+</html>

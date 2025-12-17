@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart - Hari 2</title>
+    <link rel="stylesheet" href="assets/css/general.css" />
+    <link rel="stylesheet" href="assets/css/hari2.css" />
+  </head>
+  <body>
+    <div class="container-opening">
+      <div class="opening-background">
+        <h1 class="opening-title">Hari - 2</h1>
+        <div class="opening-subtitle">Mengenal Tablet Fe</div>
+      </div>
+    </div>
+    <!-- Scene 1: Dialog Opening -->
+    <div class="scene-opening">
+      <div class="character" id="character-main">
+        <img id="main-character-img" src="" alt="Karakter Utama" />
+      </div>
+
+      <div class="container-teks-opening">
+        <div class="teks-opening">
+          <!-- Teks akan diisi oleh JavaScript -->
+        </div>
+
+        <button type="button" id="btn-start" class="btn-hidden">
+          Lanjutkan Perjalanan
+        </button>
+
+      </div>
+
+      <div class="character" id="character-teman">
+        <img src="assets/images/characters/teman-npc.png" alt="Teman" />
+      </div>
+    </div>
+
+    <!-- Scene 2: Kuis Tablet Fe -->
+    <div class="scene-kuis" style="display: none">
+      <div class="character-kuis" id="character-main-kuis">
+        <img
+          id="main-character-kuis-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="kuis-container">
+        <div class="kuis-header">
+          <h2>💊 Kenali Tablet Fe - Hari 2</h2>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">1/3</span>
+          </div>
+        </div>
+
+        <div class="kuis-content" id="kuis-content">
+          <!-- Konten kuis akan dimuat di sini -->
+        </div>
+
+        <div class="navigation-buttons">
+          <button id="btn-next" class="btn-nav">Selanjutnya ➡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: Simulasi Minum Tablet Fe -->
+    <div class="scene-simulasi" style="display: none">
+      <div class="character-simulasi" id="character-main-kuis">
+        <img
+          id="main-character-simulasi-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="simulasi-container">
+        <div class="simulasi-header">
+          <h2>⏰ Waktunya Minum Tablet Fe!</h2>
+          <div class="stats-container">
+            <div class="stat-item">
+              <span class="stat-label">Kepatuhan:</span>
+              <span class="stat-value" id="kepatuhan-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Hb Level:</span>
+              <span class="stat-value" id="hb-value">12 g/dL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="simulasi-content">
+          <div class="timer-container">
+            <div class="timer-circle">
+              <div class="timer-text" id="timer-text">60</div>
+              <div class="timer-label">detik tersisa</div>
+            </div>
+            <div class="clock-display" id="clock-display">15:59</div>
+          </div>
+
+          <div class="instruction">
+            <p>Minum tablet Fe sebelum jam <strong>16:00</strong>!</p>
+            <p>Klik tombol di bawah sebelum waktu habis</p>
+          </div>
+
+          <button id="btn-minum-fe" class="btn-primary btn-large">
+            💊 Minum Fe Sekarang
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 4: Hasil Akhir -->
+    <div class="scene-hasil" style="display: none">
+      <div class="character-hasil" id="character-main-kuis">
+        <img
+          id="main-character-hasil-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="hasil-container">
+        <div class="hasil-card">
+          <h2>🎉 Selamat! Hari 2 Selesai</h2>
+
+          <div class="hasil-message" id="hasil-message">
+            <!-- Detail skor akan dimuat di sini oleh JavaScript -->
+          </div>
+
+          </button>
+          <button id="btn-restart" class="btn-primary">Lanjut ke Hari 3</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Controls -->
+    <div class="game-controls">
+      <button class="control-btn" onclick="window.location.href='index.html'">
+        🏠 Halaman Utama
+      </button>
+      <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>
+    </div>
+
+    <div id="container-btn-mobile"></div>
+
+    <audio id="background-music" loop>
+      <source src="assets/audio/background-music.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="sound-click" preload="auto">
+      <source src="assets/audio/select-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="cool-click" preload="auto">
+      <source src="assets/audio/cool-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-click">
+      <source src="assets/audio/game-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="notification-sound">
+      <source src="assets/audio/notification.wav" type="audio/wav" />
+    </audio>
+    <script src="assets/js/hari2.js"></script>
+  </body>
+</html>

@@ -1,0 +1,372 @@
+body {
+  background: url(../backgrounds/class.jpg);
+  background-size: cover;
+}
+
+/* --- Pilih Menu Mini Game Styles --- */
+.scene-pilih-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(135, 206, 235, 0.8)),
+    url(../backgrounds/class.jpg);
+  background-size: cover;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.pilih-menu-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.character-game {
+  position: absolute;
+  /* Atur posisi agar tidak menutupi game board */
+  top: 25%;
+  right: 10px; /* Jarak dari kanan */
+  z-index: 1010; /* Lebih tinggi dari game board */
+  width: 300px; /* Ukuran karakter */
+  height: auto;
+}
+
+.character-game img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.5s ease;
+}
+
+.pilih-menu-header {
+  text-align: center;
+  color: white;
+  margin-top: 40px;
+}
+
+.pilih-menu-header h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.menu-game-board {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  margin-top: 30px;
+}
+
+.menu-instructions {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.1em;
+  color: #333;
+  line-height: 1.6;
+}
+
+.menu-categories {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.menu-categories h3 {
+  font-size: 1.5em;
+  color: var(--primary-red);
+}
+
+.menu-categories h3:last-child {
+  color: var(--success);
+}
+
+.menu-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.menu-card {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-blue);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.menu-card.selected-positive {
+  border-color: var(--success);
+  background: #e6ffed;
+  transform: scale(1.02);
+}
+
+.menu-card.selected-negative {
+  border-color: var(--danger);
+  background: #ffe6e6;
+  transform: scale(1.02);
+}
+
+.menu-card span {
+  display: block;
+  font-size: 2em;
+  margin-bottom: 5px;
+}
+
+/* Drop Areas */
+.drop-areas {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.drop-area {
+  flex: 1;
+  min-height: 50px;
+  padding: 20px;
+  border-radius: 15px;
+  border: 3px dashed #ccc;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.drop-area.positive {
+  border-color: var(--success);
+  background: #f7fffb;
+}
+
+.drop-area.negative {
+  border-color: var(--danger);
+  background: #fffafa;
+}
+
+.drop-area h4 {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.dropped-items {
+  display: flex;
+  /* flex-wrap: wrap; */
+  gap: 10px;
+  justify-content: center;
+}
+
+.dropped-item {
+  background: #e9ecef;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.dropped-item.positive {
+  background: var(--success);
+  color: white;
+}
+
+.dropped-item.negative {
+  background: var(--danger);
+  color: white;
+}
+
+.game-feedback {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: bold;
+  min-height: 40px;
+}
+
+.game-feedback.success {
+  color: var(--success);
+}
+
+.game-feedback.error {
+  color: var(--danger);
+}
+
+/* --- Simulasi Harian Styles --- */
+.scene-aktivitas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(135, 206, 235, 0.8)),
+    url(../backgrounds/class.jpg);
+  background-size: cover;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.aktivitas-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.aktivitas-header {
+  text-align: center;
+  color: white;
+  margin-top: 40px;
+}
+
+.aktivitas-header h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.daily-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  color: white;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.daily-stat-item {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px 25px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.daily-stat-item.energy-low {
+  background: rgba(255, 59, 48, 0.5);
+}
+
+.daily-stat-item.energy-ok {
+  background: rgba(76, 217, 100, 0.5);
+}
+
+.daily-action-card {
+  background: rgba(255, 255, 255, 1);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.daily-action-card h3 {
+  font-size: 1.5em;
+  color: var(--secondary-blue);
+  margin-bottom: 15px;
+}
+
+.daily-action-card p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.food-options-small {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.food-card-small {
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.food-card-small:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-blue);
+}
+
+.food-card-small.selected-food {
+  border-color: var(--success);
+  background: #e6ffed;
+}
+
+.food-card-small .energy-change {
+  font-weight: bold;
+  color: #4cd964; /* Default green for positive */
+  font-size: 0.9em;
+}
+
+/* Style khusus untuk Energy negatif */
+.food-card-small .energy-change.negative-energy {
+  color: var(--danger) !important; /* Menggunakan variabel merah global */
+}
+
+@media (max-width: 950px) {
+  .character-game {
+    /* Sembunyikan atau pindahkan ke bawah jika layar terlalu sempit */
+    display: none;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-options {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .drop-areas {
+    flex-direction: column;
+  }
+
+  .daily-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .daily-stat-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 576px) {
+  .menu-options {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .drop-areas {
+    flex-direction: column;
+  }
+
+  .daily-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .daily-stat-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pilih-menu-header h2 {
+    font-size: 1.5em;
+  }
+}

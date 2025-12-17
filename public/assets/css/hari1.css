@@ -1,0 +1,138 @@
+body {
+  background: url(../backgrounds/school.jpg);
+  background-size: cover;
+}
+
+#character-main {
+  transform: translateX(-400px);
+  transition: transform 1.4s ease;
+}
+
+#character-main.slide-main {
+  transform: translateX(0);
+}
+
+#character-guru {
+  transform: translateX(400px);
+  transition: transform 1.4s ease;
+}
+
+#character-guru.slide-guru {
+  transform: translateX(0);
+}
+
+/* Food Options */
+
+.food-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin: 40px 0;
+}
+
+.food-card {
+  background: white;
+  padding: 30px 20px;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: 3px solid transparent;
+}
+
+.food-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.food-card.selected {
+  border-color: #4cd964;
+  background: #f0fff4;
+  transform: scale(1.05);
+}
+
+.food-icon {
+  font-size: 4em;
+  margin-bottom: 15px;
+}
+
+.food-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.food-card p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.energy-change {
+  font-weight: bold;
+  color: #4cd964;
+  font-size: 1.1em;
+}
+
+.food-card[data-energy='-'] .energy-change {
+  color: #ff3b30;
+}
+
+/* Allow multiple food selections */
+.food-card.selected {
+  border-color: #4cd964;
+  background: #f0fff4;
+  transform: scale(1.05);
+}
+
+.food-card:not([data-energy*='-']):hover {
+  cursor: pointer;
+}
+
+.food-card[data-food='mie-instan'].selected {
+  border-color: #ff3b30;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 3px solid #667eea;
+  white-space: nowrap;
+  animation: typewriter 3s steps(40, end), blink 0.8s infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #character-guru.slide-guru {
+    transform: translateX(97%) translateY(-40%);
+  }
+
+  .food-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  #character-guru.slide-guru {
+    transform: translateX(67%) translateY(-40%);
+  }
+
+  .sarapan-header h2,
+  .hasil-card h2 {
+    font-size: 26px;
+  }
+
+  .food-icon {
+    font-size: 3em;
+  }
+
+  .food-card h3 {
+    font-size: 16;
+  }
+  .food-card p {
+    font-size: 14;
+  }
+
+  .energy-change {
+    font-size: 14px;
+  }
+}

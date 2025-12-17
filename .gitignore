@@ -1,0 +1,12 @@
+# Jangan upload folder library
+node_modules/
+
+# Jangan upload data rahasia
+.env
+
+# Jangan upload log error
+npm-debug.log*
+
+# Jangan upload pengaturan editor pribadi
+.vscode/
+.DS_Store

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart Admin Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css" />
+    <script>
+      // Cek apakah session login ada
+      if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+        window.location.href = 'admin-login.html';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="admin-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="ph-fill ph-first-aid-kit"></i>
+            <span>FeSmart Admin</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active">
+              <a href="#"><i class="ph ph-users"></i> Data Pemain</a>
+            </li>
+            <li>
+              <a href="analytics.html"
+                ><i class="ph ph-chart-line-up"></i> Analitik</a
+              >
+            </li>
+            <li>
+              <a href="../index.html"
+                ><i class="ph ph-house"></i> Kembali ke Game</a
+              >
+            </li>
+            <li>
+              <a href="#" id="btn-logout"
+                ><i class="ph ph-sign-out"></i> Keluar (Logout)</a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button id="btn-clear-data" class="btn-danger">
+            <i class="ph ph-trash"></i> Hapus Semua Data
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="page-title">
+            <h1>Daftar Pemain</h1>
+            <p>Pantau progres dan hasil edukasi pemain FeSmart.</p>
+          </div>
+          <div class="admin-profile">
+            <img
+              src="../assets/images/characters/guru.png"
+              alt="Admin"
+              class="avatar"
+            />
+            <div class="profile-info">
+              <span class="name">Guru UKS</span>
+              <span class="role">Administrator</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="ph ph-users-three"></i></div>
+            <div class="stat-info">
+              <h3>Total Pemain</h3>
+              <p id="total-players">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="ph ph-check-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Selesai (Hari 7)</h3>
+              <p id="completed-players">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="ph ph-trend-up"></i></div>
+            <div class="stat-info">
+              <h3>Rata-rata HB Akhir</h3>
+              <p id="avg-hb">0 g/dL</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="ph ph-brain"></i></div>
+            <div class="stat-info">
+              <h3>Rata-rata Pengetahuan</h3>
+              <p id="avg-knowledge">0 Poin</p>
+            </div>
+          </div>
+        </div>
+
+        <section class="table-section">
+          <div class="table-header">
+            <h2>Data Progres Pemain</h2>
+            <div class="table-actions">
+              <div class="search-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Cari nama pemain..."
+                />
+              </div>
+              <button class="btn-export" onclick="exportData()">
+                <i class="ph ph-download-simple"></i> Export CSV
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="table-filters"
+            style="
+              display: flex;
+              gap: 15px;
+              margin-bottom: 20px;
+              padding: 10px 0;
+              border-bottom: 1px solid #eee;
+            "
+          >
+            <div class="filter-group">
+              <label style="font-size: 12px; color: #6a7185; font-weight: 600"
+                >Urut Pengetahuan:</label
+              >
+              <select id="filter-knowledge" class="filter-select">
+                <option value="none">Default</option>
+                <option value="high">Tertinggi</option>
+                <option value="low">Terendah</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label style="font-size: 12px; color: #6a7185; font-weight: 600"
+                >Urut Kepatuhan:</label
+              >
+              <select id="filter-compliance" class="filter-select">
+                <option value="none">Default</option>
+                <option value="high">Tertinggi</option>
+                <option value="low">Terendah</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label style="font-size: 12px; color: #6a7185; font-weight: 600"
+                >Urut HB Akhir:</label
+              >
+              <select id="filter-hb" class="filter-select">
+                <option value="none">Default</option>
+                <option value="high">Tertinggi</option>
+                <option value="low">Terendah</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table id="players-table">
+              <thead>
+                <tr>
+                  <th>Nama Pemain</th>
+                  <th>Karakter</th>
+                  <th>Progres Terakhir</th>
+                  <th>Total Pengetahuan</th>
+                  <th>Total Kepatuhan</th>
+                  <th>HB Akhir</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+
+            <div id="empty-state" class="empty-state" style="display: none">
+              <i class="ph ph-ghost"></i>
+              <p>Belum ada data pemain yang tersimpan.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="deleteModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-icon danger">
+            <i class="ph ph-warning"></i>
+          </div>
+          <h3>Hapus Data Pemain?</h3>
+        </div>
+        <div class="modal-body">
+          <p>
+            Apakah Anda yakin ingin menghapus data pemain
+            <strong id="delete-player-name"></strong>?
+          </p>
+          <p class="warning-text">Tindakan ini tidak dapat dibatalkan.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel-delete" class="btn-cancel">Batal</button>
+          <button id="btn-confirm-delete" class="btn-confirm-delete">
+            Ya, Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="clearAllModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div
+            class="modal-icon danger"
+            style="
+              background: #feeceb;
+              color: #ea5455;
+              animation: pulse 2s infinite;
+            "
+          >
+            <i class="ph ph-warning-octagon"></i>
+          </div>
+          <h3>Hapus Seluruh Data?</h3>
+        </div>
+        <div class="modal-body">
+          <p>
+            Anda akan menghapus <strong>SELURUH</strong> data progres pemain
+            dari sistem.
+          </p>
+          <p class="warning-text" style="color: #ea5455; font-weight: 600">
+            Tindakan ini permanen dan tidak bisa dibatalkan!
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel-clear" class="btn-cancel">Batal</button>
+          <button id="btn-confirm-clear" class="btn-confirm-delete">
+            Ya, Reset Semua
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/session.js"></script>
+  </body>
+</html>

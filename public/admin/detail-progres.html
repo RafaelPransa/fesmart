@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Progres Pemain - FeSmart</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css" />
+    <link rel="stylesheet" href="../assets/css/detail-progres.css" />
+    <script>
+      if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+        window.location.href = 'admin-login.html';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="admin-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="ph-fill ph-first-aid-kit"></i>
+            <span>FeSmart Admin</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active">
+              <a href="index.html"><i class="ph ph-users"></i> Data Pemain</a>
+            </li>
+            <li>
+              <a href="analytics.html"
+                ><i class="ph ph-chart-line-up"></i> Analitik</a
+              >
+            </li>
+            <li>
+              <a href="../index.html"
+                ><i class="ph ph-house"></i> Kembali ke Game</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="page-title">
+            <a href="index.html" class="btn-back"
+              ><i class="ph ph-arrow-left"></i> Kembali</a
+            >
+            <h1>Detail Pemain</h1>
+          </div>
+        </header>
+
+        <div class="detail-container" id="detail-content">
+          <div class="profile-header-card">
+            <div class="profile-left">
+              <img
+                src="../assets/images/characters/siti-normal.png"
+                alt="Avatar"
+                class="profile-avatar"
+                id="p-avatar"
+              />
+              <div class="profile-text">
+                <h2 id="p-name">Memuat Nama...</h2>
+                <p id="p-role">Siswa</p>
+                <span class="join-date" id="p-date"
+                  ><i class="ph ph-calendar-blank"></i> -</span
+                >
+              </div>
+            </div>
+            <div class="profile-right">
+              <div class="status-box">
+                <span class="label">Status</span>
+                <div id="p-status-badge" class="status-badge">Memuat...</div>
+              </div>
+              <div class="hb-box">
+                <span class="label">HB Terkini</span>
+                <div class="hb-meter">
+                  <div class="hb-fill" id="p-hb-fill" style="width: 0%"></div>
+                </div>
+                <span class="hb-value" id="p-hb-val">0 g/dL</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon purple"><i class="ph ph-brain"></i></div>
+              <div class="stat-info">
+                <h3>Pengetahuan</h3>
+                <p id="score-knowledge">0</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="ph ph-check-square-offset"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Kepatuhan</h3>
+                <p id="score-compliance">0</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="ph ph-calendar-check"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Progres Hari</h3>
+                <p id="last-day">-</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="split-view">
+            <div class="section-card timeline-section">
+              <h3>📍 Jejak Petualangan</h3>
+              <div class="timeline" id="timeline-container">
+                <div class="loading-state">Mengambil riwayat...</div>
+              </div>
+            </div>
+
+            <div class="section-card analysis-section">
+              <h3>🤖 Analisis Sistem</h3>
+
+              <div class="analysis-box">
+                <h4>Diagnosa HB</h4>
+                <p id="analysis-hb">Menunggu data...</p>
+              </div>
+
+              <div class="analysis-box">
+                <h4>Perilaku & Kebiasaan</h4>
+                <p id="analysis-habit">Menunggu data...</p>
+              </div>
+
+              <div class="recommendation-box">
+                <h4>💡 Rekomendasi Guru</h4>
+                <ul id="recommendation-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../assets/js/detail-progres.js"></script>
+    <script src="../assets/js/session.js"></script>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart - Hari 1</title>
+    <link rel="stylesheet" href="assets/css/general.css" />
+    <link rel="stylesheet" href="assets/css/hari1.css" />
+  </head>
+  <body>
+    <!-- Opening Scene -->
+    <div class="container-opening">
+      <div class="opening-background">
+        <h1 class="opening-title">Hari-1</h1>
+        <div class="opening-subtitle">
+          Mari bantu
+          <span id="main-character-name">[Nama Karakter]</span> mengenali
+          anemia!
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 1: Dialog Opening -->
+    <div class="scene-opening">
+      <div class="character" id="character-main">
+        <!-- Gambar karakter utama akan di-load oleh JavaScript -->
+        <img id="main-character-img" src="" alt="Karakter Utama" />
+      </div>
+
+      <div class="container-teks-opening">
+        <div class="teks-opening">
+          <!-- Teks akan diisi oleh JavaScript -->
+        </div>
+        <button type="button" id="btn-start" class="btn-hidden">
+          Mulai Perjalanan
+        </button>
+      </div>
+
+      <div class="character" id="character-guru">
+        <img src="assets/images/characters/guru.png" alt="Guru" />
+      </div>
+    </div>
+
+    <!-- Scene 2: Kuis Anemia -->
+    <div class="scene-kuis" style="display: none">
+      <div class="character-kuis" id="character-main-kuis">
+        <img
+          id="main-character-kuis-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+
+      <div class="kuis-container">
+        <div class="kuis-header">
+          <h2>📚 Kenali Anemia - Hari 1</h2>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">1/3</span>
+          </div>
+        </div>
+
+        <div class="kuis-content" id="kuis-content">
+          <!-- Konten kuis akan dimuat di sini -->
+        </div>
+
+        <div class="navigation-buttons">
+          <button id="btn-next" class="btn-nav">Selanjutnya ➡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: Simulasi Sarapan -->
+    <div class="scene-sarapan" style="display: none">
+      <div class="sarapan-container">
+        <div class="character-sarapan" id="character-main-kuis">
+          <img
+            id="main-character-sarapan-img"
+            src=""
+            alt="Karakter Utama Berpikir"
+          />
+        </div>
+        <div class="sarapan-header">
+          <h2>
+            🍽️ Pilih Menu Sarapan
+            <span id="sarapan-character-name">[Nama]</span>
+          </h2>
+          <div class="energy-container">
+            <span class="energy-label"
+              >Energi <span id="energy-character-name">[Nama]</span>:</span
+            >
+            <div class="energy-bar">
+              <div class="energy-fill" id="energy-fill"></div>
+            </div>
+            <span class="energy-text" id="energy-text">50%</span>
+          </div>
+        </div>
+
+        <div class="food-options">
+          <div class="food-card" data-food="nasi-telur" data-energy="+30">
+            <div class="food-icon">🍛</div>
+            <h3>Nasi + Telur</h3>
+            <p>Kaya protein dan zat besi</p>
+          </div>
+
+          <div class="food-card" data-food="roti" data-energy="+15">
+            <div class="food-icon">🍞</div>
+            <h3>Roti Gandum</h3>
+            <p>Serat tinggi, energi stabil</p>
+          </div>
+
+          <div class="food-card" data-food="mie-instan" data-energy="-20">
+            <div class="food-icon">🍜</div>
+            <h3>Mie Instan</h3>
+            <p>Praktis tapi kurang gizi</p>
+          </div>
+        </div>
+
+        <div class="result-container">
+          <div class="result-message" id="result-message"></div>
+          <button id="btn-lanjut" class="btn-primary btn-hidden">
+            Lanjutkan Perjalanan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 4: Hasil Akhir -->
+    <div class="scene-hasil" style="display: none">
+      <div class="character-hasil" id="character-main-kuis">
+        <img
+          id="main-character-hasil-img"
+          src=""
+          alt="Karakter Utama Berpikir"
+        />
+      </div>
+      <div class="hasil-container">
+        <div class="hasil-card">
+          <h2>🎉 Selamat! Hari 1 Selesai</h2>
+
+          <div class="hasil-message" id="hasil-message">
+            <!-- Detail skor akan dimuat di sini oleh JavaScript -->
+          </div>
+
+          <button id="btn-restart" class="btn-primary">
+            Lanjut ke Tahap Berikutnya
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Controls -->
+    <div class="game-controls">
+      <button class="control-btn" onclick="window.location.href='index.html'">
+        🏠 Halaman Utama
+      </button>
+      <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>
+    </div>
+
+    <div id="container-btn-mobile"></div>
+
+    <audio id="background-music" loop>
+      <source src="assets/audio/background-music.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="sound-click" preload="auto">
+      <source src="assets/audio/select-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="cool-click" preload="auto">
+      <source src="assets/audio/cool-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-click">
+      <source src="assets/audio/game-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="notification-sound">
+      <source src="assets/audio/notification.wav" type="audio/wav" />
+    </audio>
+    <script src="assets/js/hari1.js"></script>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeSmart - Hari 7</title>
+    <link rel="stylesheet" href="assets/css/hari7.css" />
+  </head>
+  <body>
+    <div class="container-opening">
+      <div class="opening-background">
+        <h1 class="opening-title">Hari - 7</h1>
+        <div class="opening-subtitle">Penilaian Akhir</div>
+      </div>
+    </div>
+
+    <div class="scene-opening">
+      <div class="character" id="character-main">
+        <img id="main-character-img" src="" alt="Karakter Utama" />
+      </div>
+
+      <div class="container-teks-opening">
+        <div class="teks-opening"></div>
+
+        <button type="button" id="btn-start" class="btn-hidden">
+          Mulai Puzzle Iron Match
+        </button>
+      </div>
+
+      <div class="character" id="character-guru">
+        <img src="assets/images/characters/guru.png" alt="Guru UKS" />
+      </div>
+    </div>
+
+    <div class="scene-game" id="scene-puzzle-game" style="display: none">
+      <div class="puzzle-container">
+        <div class="puzzle-header">
+          <h2>🧩 Iron Match: Pulihkan HB!</h2>
+        </div>
+
+        <div class="puzzle-stats-container">
+          <div class="stat-item">
+            <span class="stat-label">HB Level:</span>
+            <span class="stat-value hb-value" id="hb-level-display"
+              >12.0 g/dL</span
+            >
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Gerakan Tersisa:</span>
+            <span class="stat-value" id="moves-left-display">30</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Skor Game:</span>
+            <span class="stat-value" id="score-display">0</span>
+          </div>
+        </div>
+
+        <div class="game-grid" id="game-grid"></div>
+
+        <p id="game-feedback" class="game-feedback"></p>
+
+        <button
+          id="btn-end-game"
+          class="btn-primary btn-large"
+          style="display: none; margin-top: 20px"
+        >
+          Lihat Hasil Akhir
+        </button>
+      </div>
+
+      <div class="character-game-puzzle">
+        <img id="main-character-game-img" src="" alt="Karakter Fokus" />
+      </div>
+    </div>
+
+    <div
+      class="scene-hasil-dashboard"
+      id="scene-hasil-dashboard"
+      style="display: none"
+    >
+      <div class="character-hasil" id="character-main-hasil-dashboard">
+        <img id="main-character-hasil-img" src="" alt="Karakter Utama Senang" />
+      </div>
+      <div class="hasil-container">
+        <div class="hasil-card dashboard-card">
+          <h2>🏆 Laporan Hasil Akhir FeSmart</h2>
+
+          <div class="dashboard-stats">
+            <div class="stat-score-item">
+              <h3>Skor Pengetahuan Akhir (X)</h3>
+              <p class="score-x" id="score-pengetahuan-akhir"></p>
+            </div>
+            <div class="stat-score-item">
+              <h3>Skor Kepatuhan (Y)</h3>
+              <p class="score-y" id="score-kepatuhan-akhir"></p>
+            </div>
+          </div>
+
+          <div class="grafik-simulasi">
+            <h3>Hubungan Pengetahuan (X) dan Kepatuhan (Y)</h3>
+            <canvas id="xyChart"></canvas>
+            <p class="message-chart-placeholder">Grafik</p>
+          </div>
+
+          <div class="final-message" id="final-message"></div>
+
+          <button id="btn-selesai" class="btn-primary btn-large">
+            Selesai dan Kembali ke Menu Utama
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-controls">
+      <button class="control-btn" onclick="window.location.href='index.html'">
+        🏠 Halaman Utama
+      </button>
+      <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>
+    </div>
+    <div id="container-btn-mobile"></div>
+    <audio id="background-music" loop>
+      <source src="assets/audio/background-music.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="sound-click" preload="auto">
+      <source src="assets/audio/select-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="cool-click" preload="auto">
+      <source src="assets/audio/cool-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-click">
+      <source src="assets/audio/game-click.wav" type="audio/wav" />
+    </audio>
+    <audio id="notification-sound">
+      <source src="assets/audio/notification.wav" type="audio/wav" />
+    </audio>
+    <audio id="matches-puzzle">
+      <source src="assets/audio/matches-puzzle.wav" type="audio/wav" />
+    </audio>
+    <audio id="not-matches-puzzle">
+      <source src="assets/audio/not-matches.wav" type="audio/wav" />
+    </audio>
+    <audio id="game-finish">
+      <source src="assets/audio/game-finish.wav" type="audio/wav" />
+    </audio>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="assets/js/hari7.js"></script>
+  </body>
+</html>
