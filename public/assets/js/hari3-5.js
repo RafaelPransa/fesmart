@@ -524,6 +524,11 @@ document.addEventListener('DOMContentLoaded', function () {
         renderSoal();
       };
     }
+
+    // Sound pilih jawaban
+    document.querySelectorAll('input[name="jawaban"]').forEach((radio) => {
+      radio.addEventListener('change', () => window.playClickSound());
+    });
   }
 
   // ============================================================
