@@ -589,6 +589,9 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
     // Fetch Backend
+    const titleFinal = document.getElementById('final-result-title');
+    titleFinal.textContent = `🎉${currentDay}`;
+
     const btnNextDay = document.getElementById('btn-next-day');
     const isLastLoop = currentDay >= 5;
     btnNextDay.textContent = isLastLoop
