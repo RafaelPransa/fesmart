@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch Backend
     const titleFinal = document.getElementById('final-result-title');
-    titleFinal.textContent = `🎉${currentDay}`;
+    titleFinal.textContent = `🎉Selamat! Hari ${currentDay} Selesai`;
 
     const btnNextDay = document.getElementById('btn-next-day');
     const isLastLoop = currentDay >= 5;
