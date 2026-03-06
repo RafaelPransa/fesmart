@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #1e293b;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+header p {
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+/* Grid System */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Card Style */
+.day-card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.day-number {
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #475569;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
+
+.day-card h3 {
+  margin-bottom: 10px;
+  color: #1e293b;
+}
+
+.day-card p {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.day-card span {
+    font-weight: 700;
+}
+
+/* Card Khusus Hari ke-7 */
+.day-card.final {
+  background: #0f172a;
+  color: white;
+}
+
+.day-card.final .day-number {
+  background: #334155;
+  color: #f8fafc;
+}
+
+.day-card.final h3,
+.day-card.final p {
+  color: white;
+}
+
+/* Tombol Kembali */
+.action-area {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.btn-back {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: transparent;
+  border: 2px solid #cbd5e1;
+  color: #475569;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Responsive Tablet & Mobile */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  } /* Satu kolom di HP */
+}
