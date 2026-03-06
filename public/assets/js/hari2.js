@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const btnStart = document.getElementById('btn-start');
   const btnBack = document.querySelector('.container-btn .btn-secondary');
   const containerBtn = document.querySelector(
-    '.scene-opening .container-teks-opening .container-btn'
+    '.scene-opening .container-teks-opening .container-btn',
   );
 
   // --- Audio Elements ---
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
     const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]'
+      '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) {
       soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
@@ -114,6 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
         murung: 'assets/images/characters/sari-murung.png',
         senang: 'assets/images/characters/sari-senang.png',
         berpikir: 'assets/images/characters/sari-berpikir.png',
+      },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
+        berpikir: 'assets/images/characters/clara-berpikir.png',
       },
     };
     // Fallback jika characterId tidak ditemukan (default siti)
@@ -304,10 +310,10 @@ document.addEventListener('DOMContentLoaded', function () {
             <label>
               <input type="radio" name="jawaban" value="${i}">
               <span class="opsi-text">${String.fromCharCode(
-                65 + i
+                65 + i,
               )}. ${opsi}</span>
             </label>
-          `
+          `,
             )
             .join('')}
         </div>
@@ -334,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function navigateKuis(direction) {
     const selectedAnswer = document.querySelector(
-      'input[name="jawaban"]:checked'
+      'input[name="jawaban"]:checked',
     );
     if (!selectedAnswer && direction === 1) {
       alert('Pilih jawaban terlebih dahulu!');
@@ -382,12 +388,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnMinumFe = document.getElementById('btn-minum-fe');
 
     const characterSimulasiImg = document.getElementById(
-      'main-character-simulasi-img'
+      'main-character-simulasi-img',
     );
     if (characterSimulasiImg) {
       characterSimulasiImg.src = getCharacterImage(
         mainCharacter.id,
-        'berpikir'
+        'berpikir',
       );
       characterSimulasiImg.classList.add('fade-in');
     }
@@ -433,18 +439,18 @@ document.addEventListener('DOMContentLoaded', function () {
       hbLevel += 0.5;
       showFePopup(
         `Tepat waktu! Kamu berhasil minum tablet Fe sebelum jam 16:00\n+10 Poin Kepatuhan\nHb meningkat menjadi ${hbLevel.toFixed(
-          1
+          1,
         )} g/dL`,
-        'success'
+        'success',
       );
     } else {
       // Terlambat
       hbLevel = Math.max(8, hbLevel - 0.5);
       showFePopup(
         `Waktu habis! Kamu terlambat minum tablet Fe\nHb menurun menjadi ${hbLevel.toFixed(
-          1
+          1,
         )} g/dL\nIngat, minum sebelum jam 16:00 ya!`,
-        'error'
+        'error',
       );
     }
 
@@ -459,9 +465,9 @@ document.addEventListener('DOMContentLoaded', function () {
     hbLevel = Math.max(8, hbLevel - 0.5);
     showFePopup(
       `Waktu habis! Kamu terlambat minum tablet Fe\nHb menurun menjadi ${hbLevel.toFixed(
-        1
+        1,
       )} g/dL\nIngat, minum sebelum jam 16:00 ya!`,
-      'error'
+      'error',
     );
     btnMinumFe.disabled = true;
     btnMinumFe.textContent = '⏰ Terlambat';
@@ -471,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateStatsDisplay() {
     document.getElementById('kepatuhan-value').textContent = kepatuhan;
     document.getElementById('hb-value').textContent = `${hbLevel.toFixed(
-      1
+      1,
     )} g/dL`;
   }
 
@@ -535,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
     sceneHasil.style.display = 'block';
 
     const characterHasilImg = document.getElementById(
-      'main-character-hasil-img'
+      'main-character-hasil-img',
     );
     const totalScore = score + kepatuhan;
 
@@ -562,12 +568,12 @@ document.addEventListener('DOMContentLoaded', function () {
     hasilMessage.innerHTML = `
       <div class="score-detail">
         <div class="score-item-detail"><span class="score-label">Skor Kuis:</span><span class="score-value">${score}/${
-      kuisData.length
-    }</span></div>
+          kuisData.length
+        }</span></div>
         <div class="score-item-detail"><span class="score-label">Skor Kepatuhan:</span><span class="score-value">${kepatuhan}</span></div>
         <div class="score-item-detail total-item"><span class="score-label">Total Skor Hari Ini:</span><span class="score-value total-value">${totalScore}</span></div>
         <div class="score-item-detail"><span class="score-label">Hb Akhir:</span><span class="score-value">${hbLevel.toFixed(
-          1
+          1,
         )} g/dL</span></div>
       </div>
     `;

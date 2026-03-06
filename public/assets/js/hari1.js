@@ -64,6 +64,12 @@ document.addEventListener('DOMContentLoaded', function () {
         senang: 'assets/images/characters/sari-senang.png',
         berpikir: 'assets/images/characters/sari-berpikir.png',
       },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
+        berpikir: 'assets/images/characters/clara-berpikir.png',
+      },
     };
     // Safety check jika characterId salah
     const charData = characterImages[characterId] || characterImages['siti'];

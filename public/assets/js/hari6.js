@@ -86,6 +86,12 @@ document.addEventListener('DOMContentLoaded', function () {
         senang: 'assets/images/characters/sari-senang.png',
         berpikir: 'assets/images/characters/sari-berpikir.png',
       },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
+        berpikir: 'assets/images/characters/clara-berpikir.png',
+      },
     };
     return (
       characterImages[characterId]?.[emotion] ||
@@ -363,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const guruImg = document
       .getElementById('character-guru-simulasi')
       .querySelector('img');
-    if (guruImg) guruImg.src = getCharacterImage('sari', emotion);
+    if (guruImg) guruImg.src = getCharacterImage(mainCharacter.id, emotion);
   }
 
   // --- 2. HASIL AKHIR & INTEGRASI BACKEND SAVE (INTEGRASI) ---

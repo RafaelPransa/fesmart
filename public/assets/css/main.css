@@ -106,6 +106,10 @@
 }
 
 .character-card:nth-of-type(2) .character-avatar {
+  background: var(--success);
+}
+
+.character-card:nth-of-type(3) .character-avatar {
   background: var(--secondary-blue);
 }
 
@@ -127,6 +131,10 @@
 }
 
 .character-card:nth-of-type(2) .character-name {
+  color: var(--success);
+}
+
+.character-card:nth-of-type(3) .character-name {
   color: var(--secondary-blue);
 }
 

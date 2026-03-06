@@ -426,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const characterNames = {
       siti: 'Siti',
       sari: 'Sari',
+      clara: 'Clara',
     };
     return characterNames[characterId] || 'Karakter';
   }
@@ -441,6 +442,11 @@ document.addEventListener('DOMContentLoaded', function () {
         normal: 'assets/images/characters/sari-normal.png',
         murung: 'assets/images/characters/sari-murung.png',
         senang: 'assets/images/characters/sari-senang.png',
+      },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
       },
     };
     return (

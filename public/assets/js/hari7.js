@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Ambil HB terakhir yang tercatat dari Hari 6 (Data dari Database/LocalStorage)
   let currentHbLevel = parseFloat(
-    userData.progress?.['hari6']?.hbLevel || userData.finalHb || 12
+    userData.progress?.['hari6']?.hbLevel || userData.finalHb || 12,
   );
 
   // DOM Elements
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
     const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]'
+      '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
     if (isSoundOn) playBackgroundMusic();
@@ -108,6 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
         murung: 'assets/images/characters/sari-murung.png',
         senang: 'assets/images/characters/sari-senang.png',
         berpikir: 'assets/images/characters/sari-berpikir.png',
+      },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
+        berpikir: 'assets/images/characters/clara-berpikir.png',
       },
     };
     return (
@@ -147,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function initGame() {
     document.getElementById('main-character-img').src = getCharacterImage(
       mainCharacter.id,
-      'berpikir'
+      'berpikir',
     );
     setTimeout(() => {
       containerOpening.style.transform = 'translateY(-100vh)';
@@ -229,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="stat-item">
             <span class="stat-label">HB Level:</span>
             <span class="stat-value hb-value" id="hb-level-display">${currentHbLevel.toFixed(
-              1
+              1,
             )}</span>
           </div>
           
@@ -256,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="character-game-puzzle">
         <img id="main-character-game-img" src="${getCharacterImage(
           mainCharacter.id,
-          'berpikir'
+          'berpikir',
         )}" alt="Karakter" />
       </div>`;
   }
@@ -366,9 +372,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateGameStats() {
-    document.getElementById(
-      'hb-level-display'
-    ).textContent = `${currentHbLevel.toFixed(1)} g/dL`;
+    document.getElementById('hb-level-display').textContent =
+      `${currentHbLevel.toFixed(1)} g/dL`;
     document.getElementById('moves-left-display').textContent = movesLeft;
     document.getElementById('score-display').textContent = score;
     if (currentHbLevel >= HB_TARGET) endGame(true, 'Target HB Tercapai!');
@@ -501,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Tambahkan efek visual CSS
         const tileEl = document.querySelector(
-          `.game-tile[data-row="${r}"][data-col="${c}"]`
+          `.game-tile[data-row="${r}"][data-col="${c}"]`,
         );
         if (tileEl) tileEl.classList.add('matched-effect');
       }
@@ -658,17 +663,15 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('fesmart_user', JSON.stringify(userData));
 
     // Update UI Dashboard
-    document.getElementById(
-      'score-pengetahuan-akhir'
-    ).textContent = `${totalKnowledgePoints} Poin`;
-    document.getElementById(
-      'score-kepatuhan-akhir'
-    ).textContent = `${totalCompliance} Poin`;
+    document.getElementById('score-pengetahuan-akhir').textContent =
+      `${totalKnowledgePoints} Poin`;
+    document.getElementById('score-kepatuhan-akhir').textContent =
+      `${totalCompliance} Poin`;
 
     let emotion = win ? 'senang' : currentHbLevel >= 12 ? 'normal' : 'murung';
     document.getElementById('main-character-hasil-img').src = getCharacterImage(
       mainCharacter.id,
-      emotion
+      emotion,
     );
     document.getElementById('final-message').innerHTML = `<strong>${
       win ? '🎉 Hebat! HB Optimal!' : '👍 HB mu Normal, tetap jaga nutrisi!'

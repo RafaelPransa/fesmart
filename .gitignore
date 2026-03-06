@@ -10,3 +10,5 @@ npm-debug.log*
 # Jangan upload pengaturan editor pribadi
 .vscode/
 .DS_Store
+.vercel
+.env*.local
