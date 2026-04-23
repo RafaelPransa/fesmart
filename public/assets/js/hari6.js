@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
     const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]'
+      '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
     if (isSoundOn) playBackgroundMusic();
@@ -180,6 +180,8 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   let currentKuisIndex = 0;
+  let hari6UserAnswers = [];
+  let hari6SimulasiChoice = null;
   const mainCharacter = {
     id: userData.character,
     name: userData.username || userData.characterName,
@@ -191,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function initGame() {
     document.getElementById('main-character-img').src = getCharacterImage(
       mainCharacter.id,
-      'berpikir'
+      'berpikir',
     );
 
     // Opening animation
@@ -242,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
       sceneOpening.style.display = 'none';
       sceneKuis.style.display = 'block';
       const characterKuisImg = document.getElementById(
-        'main-character-kuis-img'
+        'main-character-kuis-img',
       );
       if (characterKuisImg) {
         characterKuisImg.src = getCharacterImage(mainCharacter.id, 'berpikir');
@@ -272,10 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
             <label>
               <input type="radio" name="jawaban" value="${i}">
               <span class="opsi-text">${String.fromCharCode(
-                65 + i
+                65 + i,
               )}. ${opsi}</span>
             </label>
-          `
+          `,
             )
             .join('')}
         </div>
@@ -297,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function navigateKuis(direction) {
     const selectedAnswer = document.querySelector(
-      'input[name="jawaban"]:checked'
+      'input[name="jawaban"]:checked',
     );
     if (!selectedAnswer && direction === 1) {
       alert('Pilih jawaban terlebih dahulu!');
@@ -305,8 +307,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (direction === 1 && selectedAnswer) {
-      const isCorrect =
-        parseInt(selectedAnswer.value) === kuisData[currentKuisIndex].jawaban;
+      const userAnswerIndex = parseInt(selectedAnswer.value);
+      const isCorrect = userAnswerIndex === kuisData[currentKuisIndex].jawaban;
+
+      // Track jawaban user
+      hari6UserAnswers.push({
+        questionIndex: currentKuisIndex,
+        question: kuisData[currentKuisIndex].soal,
+        options: kuisData[currentKuisIndex].opsi,
+        userAnswer: userAnswerIndex,
+        correctAnswer: kuisData[currentKuisIndex].jawaban,
+        isCorrect: isCorrect,
+        points: isCorrect ? 1 : 0,
+      });
+
       if (isCorrect) {
         kuisScore++;
       }
@@ -350,17 +364,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (pilihan === 'ikut') {
       totalKepatuhan += 10;
       currentHbLevel = Math.min(15, currentHbLevel + 0.5);
+      hari6SimulasiChoice = { choice: 'ikut', points: 10, correct: true };
       feedback.style.display = 'block';
       feedback.textContent = `✅ Luar Biasa! Kamu mendapatkan +10 Poin Kepatuhan. Hb Levelmu naik menjadi ${currentHbLevel.toFixed(
-        1
+        1,
       )} g/dL.`;
       feedback.style.color = '#4CD964';
       emotion = 'senang';
     } else {
       currentHbLevel = Math.max(8, currentHbLevel - 0.5);
+      hari6SimulasiChoice = { choice: 'tidak-ikut', points: 0, correct: false };
       feedback.style.display = 'block';
       feedback.textContent = `❌ Sayang sekali. Kepatuhanmu tidak tercatat. Hb Levelmu turun menjadi ${currentHbLevel.toFixed(
-        1
+        1,
       )} g/dL. Jangan ulangi lagi!`;
       feedback.style.color = '#FF3B30';
       emotion = 'murung';
@@ -399,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update UI
     const hasilMessage = document.getElementById('hasil-message');
-    hasilMessage.innerHTML = `
+    let reviewHtml = `
       <div class="score-detail">
         <div class="score-item-detail">
           <span class="score-label">Skor Kuis Hari Ini:</span>
@@ -412,11 +428,78 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="score-item-detail total-item">
           <span class="score-label">Hb Level Akhir:</span>
           <span class="score-value total-value">${currentHbLevel.toFixed(
-            1
+            1,
           )} g/dL</span>
         </div>
       </div>
+      
+      <div class="hari-review">
+        <h3>📝 Review Jawaban - Hari 6</h3>
+        
+        <div class="review-section">
+          <h4>💊 Kuis Dampak Anemia</h4>
+          ${hari6UserAnswers
+            .map((answer, idx) => {
+              return `
+              <div class="review-item kuis-review-item">
+                <div class="review-question">
+                  <span class="question-text">${answer.question}</span>
+                  <span class="question-points ${answer.isCorrect ? 'correct-points' : 'incorrect-points'}">
+                    ${answer.isCorrect ? '+1' : '0'}
+                  </span>
+                </div>
+                <div class="review-options">
+                  ${answer.options
+                    .map((opsi, opsiIndex) => {
+                      const isUserAnswer = opsiIndex === answer.userAnswer;
+                      const isCorrectAnswer =
+                        opsiIndex === answer.correctAnswer;
+                      let className = 'review-option';
+                      let icon = '';
+                      if (isUserAnswer && !answer.isCorrect) {
+                        className += ' incorrect';
+                        icon = '❌';
+                      } else if (isCorrectAnswer) {
+                        className += ' correct';
+                        icon = '✅';
+                      }
+                      return `<div class="${className}">${opsi} ${icon}</div>`;
+                    })
+                    .join('')}
+                </div>
+              </div>
+            `;
+            })
+            .join('')}
+        </div>
+        
+        <div class="review-section">
+          <h4>⏰ Program Minum Tablet Fe</h4>
+          <div class="simulasi-choice-display ${hari6SimulasiChoice?.correct ? 'correct-choice' : 'incorrect-choice'}">
+            <div class="choice-content">
+              <div class="choice-question">Ikuti Program Minum Tablet Fe Rutin di UKS?</div>
+              <div class="choice-status">${hari6SimulasiChoice?.choice === 'ikut' ? '✅ Ikut' : '❌ Tidak Ikut'}</div>
+            </div>
+            <div class="choice-points">${hari6SimulasiChoice?.points || 0}</div>
+          </div>
+          ${
+            hari6SimulasiChoice?.correct === false
+              ? `
+            <div class="correct-answer-display">
+              <h5>✓ Jawaban yang Benar</h5>
+              <div class="simulasi-choice-display correct-choice">
+                <div class="choice-content">
+                  <div class="choice-question">Ikuti Program Minum Tablet Fe Rutin di UKS</div>
+                </div>
+              </div>
+            </div>
+          `
+              : ''
+          }
+        </div>
+      </div>
     `;
+    hasilMessage.innerHTML = reviewHtml;
 
     const feedbackMessage = document.createElement('div');
     feedbackMessage.className = 'feedback-message';
@@ -483,10 +566,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function checkWindowSize() {
     const containerBtnStartDekstop = document.querySelector(
-      '.container-teks-opening'
+      '.container-teks-opening',
     );
     const containerBtnStartMobile = document.getElementById(
-      'container-btn-mobile'
+      'container-btn-mobile',
     );
     if (window.innerWidth <= 768) {
       if (btnStart.parentNode === containerBtnStartDekstop) {

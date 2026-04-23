@@ -7,6 +7,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const path = require("path");
+
+// Memberitahu Express untuk melayani file statis dari folder "public"
+app.use(express.static(path.join(__dirname, "../public")));
+
+// Menangani halaman utama agar membuka index.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
 // ==========================================
 // 1. ROUTE: Detail Satu Pemain (By ID)
 // ==========================================

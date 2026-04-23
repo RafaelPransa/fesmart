@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update ikon
     const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]'
+      '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) {
       soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
       window.playClickSound();
       // Remove previous selection
       characterCards.forEach((c) =>
-        c.classList.remove('selected', 'anonymous-selected')
+        c.classList.remove('selected', 'anonymous-selected'),
       );
 
       // Add selection to clicked card
@@ -224,21 +224,21 @@ document.addEventListener('DOMContentLoaded', function () {
       usernameInput.classList.remove(
         'username-input-focused',
         'username-input-valid',
-        'username-input-invalid'
+        'username-input-invalid',
       );
       usernameInput.classList.add('username-input-disabled');
     } else if (document.activeElement === usernameInput) {
       usernameInput.classList.remove(
         'username-input-valid',
         'username-input-invalid',
-        'username-input-disabled'
+        'username-input-disabled',
       );
       usernameInput.classList.add('username-input-focused');
     } else {
       const username = usernameInput.value.trim();
       usernameInput.classList.remove(
         'username-input-focused',
-        'username-input-disabled'
+        'username-input-disabled',
       );
 
       if (username.length > 0 && username.length <= 15) {
@@ -351,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-
   // --- KONEKSI KE BACKEND (FUNGSI UTAMA) ---
   async function startGame() {
     if (!isFormValid || !selectedCharacter) return;
@@ -403,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         localStorage.setItem(
           'fesmart_user_session',
-          JSON.stringify(sessionData)
+          JSON.stringify(sessionData),
         );
         localStorage.setItem('fesmart_user', JSON.stringify(sessionData));
 
@@ -417,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (error) {
       console.error('Error backend:', error);
       if (loadingContainer) loadingContainer.classList.remove('show');
-      showValidation('Gagal terhubung ke Server.', 'error');
+      showValidationMessage('Gagal terhubung ke Server.', 'error');
       alert('Gagal terhubung ke server backend.');
     }
   }

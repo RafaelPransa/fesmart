@@ -10,8 +10,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(135, 206, 235, 0.8)),
-    url(../backgrounds/class.jpg);
+  background:
+    linear-gradient(rgba(135, 206, 235, 0.8)), url(../backgrounds/class.jpg);
   background-size: cover;
   z-index: 1000;
   overflow-y: auto;
@@ -210,8 +210,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(135, 206, 235, 0.8)),
-    url(../backgrounds/class.jpg);
+  background:
+    linear-gradient(rgba(135, 206, 235, 0.8)), url(../backgrounds/class.jpg);
   background-size: cover;
   z-index: 1000;
   overflow-y: auto;
@@ -326,8 +326,287 @@ body {
   }
 }
 
-/* Responsive */
+/* === REVIEW SECTION STYLES === */
+.hari-review {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hari-review h3 {
+  text-align: center;
+  color: var(--secondary-blue);
+  font-size: 1.4em;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.review-section {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.review-section h4 {
+  color: #333;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.review-section h5 {
+  color: #555;
+  font-size: 1em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Hari 3 Category Review */
+.category-review {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.category-box {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  min-height: 100px;
+}
+
+.category-box.penghambat-box {
+  background: #ffebee;
+  border-color: #ff3b30;
+}
+
+.category-box.zatbesi-box {
+  background: #f0fff4;
+  border-color: #4cd964;
+}
+
+.category-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item-badge {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 0.9em;
+  display: inline-block;
+}
+
+.category-box.penghambat-box .item-badge {
+  border-color: #ff3b30;
+  color: #8b1a1a;
+}
+
+.category-box.zatbesi-box .item-badge {
+  border-color: #4cd964;
+  color: #2d5a2d;
+}
+
+.empty-text {
+  color: #999;
+  font-style: italic;
+}
+
+.answer-score {
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+/* Hari 4 Choice Display */
+.choice-display {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  background: white;
+  margin-bottom: 15px;
+}
+
+.choice-display.correct-choice {
+  border-color: #4cd964;
+  background: #f0fff4;
+}
+
+.choice-display.incorrect-choice {
+  border-color: #ff3b30;
+  background: #ffebee;
+}
+
+.choice-icon {
+  font-size: 2.5em;
+  min-width: 60px;
+  text-align: center;
+}
+
+.choice-details {
+  flex: 1;
+}
+
+.choice-name {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.choice-status {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 3px;
+}
+
+.choice-points {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #4cd964;
+}
+
+.incorrect-choice .choice-points {
+  color: #ff3b30;
+}
+
+.correct-answer-display {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.correct-answer-display h5 {
+  margin-bottom: 10px;
+}
+
+/* Hari 5 Kuis Review */
+.kuis-review-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.review-item {
+  margin-bottom: 15px;
+}
+
+.review-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 1em;
+}
+
+.question-text {
+  flex: 1;
+}
+
+.question-points {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-left: 10px;
+  min-width: 45px;
+  text-align: right;
+}
+
+.question-points.correct-points {
+  color: #4cd964;
+}
+
+.question-points.incorrect-points {
+  color: #ff3b30;
+}
+
+.review-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-option {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: white;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  font-size: 0.95em;
+}
+
+.review-option.correct {
+  border-color: #4cd964;
+  background: #f0fff4;
+  color: #2d5a2d;
+}
+
+.review-option.incorrect {
+  border-color: #ff3b30;
+  background: #ffebee;
+  color: #8b1a1a;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+  .hari-review {
+    padding: 15px;
+  }
+
+  .hari-review h3 {
+    font-size: 1.2em;
+  }
+
+  .category-review {
+    flex-direction: column;
+  }
+
+  .category-box {
+    min-height: auto;
+  }
+
+  .choice-display {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .choice-icon {
+    min-width: auto;
+  }
+
+  .review-question {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .question-points {
+    margin-left: 0;
+    margin-top: 5px;
+    text-align: left;
+  }
+
+  .review-option {
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+
   .menu-options {
     grid-template-columns: 1fr 1fr;
   }
@@ -348,6 +627,45 @@ body {
 }
 
 @media (max-width: 576px) {
+  .hari-review h3 {
+    font-size: 18px;
+  }
+
+  .review-section {
+    padding: 12px;
+  }
+
+  .review-section h4 {
+    font-size: 1em;
+  }
+
+  .category-items {
+    gap: 6px;
+  }
+
+  .item-badge {
+    font-size: 0.85em;
+    padding: 5px 8px;
+  }
+
+  .choice-display {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .choice-icon {
+    font-size: 2em;
+  }
+
+  .choice-name {
+    font-size: 1em;
+  }
+
+  .review-option {
+    padding: 8px;
+    font-size: 14px;
+  }
+
   .menu-options {
     grid-template-columns: 1fr 1fr;
   }

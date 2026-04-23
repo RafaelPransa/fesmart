@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let bonusPengetahuan = 0;
   let jumlahPilihanSehat = 0;
   let selectedFood = null;
+  let userAnswers = []; // Array untuk menyimpan jawaban user
 
   // --- 6. GAME FLOW CONTROL ---
 
@@ -342,10 +343,10 @@ document.addEventListener('DOMContentLoaded', function () {
             <label>
               <input type="radio" name="jawaban" value="${i}">
               <span class="opsi-text">${String.fromCharCode(
-                65 + i
+                65 + i,
               )}. ${opsi}</span>
             </label>
-          `
+          `,
             )
             .join('')}
         </div>
@@ -373,14 +374,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function navigateKuis(direction) {
     const selectedAnswer = document.querySelector(
-      'input[name="jawaban"]:checked'
+      'input[name="jawaban"]:checked',
     );
     if (!selectedAnswer) {
       alert('Pilih jawaban terlebih dahulu!');
       return;
     }
 
-    if (parseInt(selectedAnswer.value) === kuisData[currentKuisIndex].jawaban) {
+    const userAnswerIndex = parseInt(selectedAnswer.value);
+    const isCorrect = userAnswerIndex === kuisData[currentKuisIndex].jawaban;
+
+    // Simpan jawaban user
+    userAnswers.push({
+      questionIndex: currentKuisIndex,
+      userAnswer: userAnswerIndex,
+      correctAnswer: kuisData[currentKuisIndex].jawaban,
+      isCorrect: isCorrect,
+    });
+
+    if (isCorrect) {
       score++;
     }
 
@@ -525,8 +537,8 @@ document.addEventListener('DOMContentLoaded', function () {
     hasilMessage.innerHTML = `
       <div class="score-detail">
         <div class="score-item-detail"><span class="score-label">Skor Kuis:</span><span class="score-value">${score}/${
-      kuisData.length
-    }</span></div>
+          kuisData.length
+        }</span></div>
         ${
           bonusPengetahuan > 0
             ? `<div class="score-item-detail bonus-item"><span class="score-label">Bonus Makanan:</span><span class="score-value">+${bonusPengetahuan}</span></div>`
@@ -534,6 +546,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         <div class="score-item-detail total-item"><span class="score-label">Total Pengetahuan:</span><span class="score-value total-value">${totalPengetahuan}</span></div>
         <div class="score-item-detail"><span class="score-label">Energi Akhir:</span><span class="score-value">${energy}%</span></div>
+      </div>
+
+      <div class="kuis-review">
+        <h3>📝 Review Jawaban Anda</h3>
+        ${userAnswers
+          .map((answer, index) => {
+            const soal = kuisData[answer.questionIndex];
+            return `
+            <div class="review-item">
+              <div class="review-question">
+                <span class="question-text">${soal.soal}</span>
+                <span class="question-points ${answer.isCorrect ? 'correct-points' : 'incorrect-points'}">
+                    ${answer.isCorrect ? '+1' : '0'}
+                  </span>
+              </div>
+              <div class="review-options">
+                ${soal.opsi
+                  .map((opsi, opsiIndex) => {
+                    const isUserAnswer = opsiIndex === answer.userAnswer;
+                    const isCorrectAnswer = opsiIndex === answer.correctAnswer;
+                    let className = 'review-option';
+                    let icon = '';
+                    if (isUserAnswer && !answer.isCorrect) {
+                      className += ' incorrect';
+                      icon = '❌';
+                    } else if (isCorrectAnswer) {
+                      className += ' correct';
+                      icon = '✅';
+                    }
+                    return `<div class="${className}">${opsi} ${icon}</div>`;
+                  })
+                  .join('')}
+              </div>
+            </div>
+          `;
+          })
+          .join('')}
       </div>
     `;
 

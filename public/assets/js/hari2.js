@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let timer;
   let timeLeft = 60;
   let gameCompleted = false;
+  let userAnswers = []; // Array untuk menyimpan jawaban user
 
   // Ambil nilai awal dari progress sebelumnya (akumulasi)
   let totalKnowledge = userData.totalKnowledge || 0;
@@ -348,9 +349,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (direction === 1 && selectedAnswer) {
-      if (
-        parseInt(selectedAnswer.value) === kuisData[currentKuisIndex].jawaban
-      ) {
+      const userAnswerIndex = parseInt(selectedAnswer.value);
+      const isCorrect = userAnswerIndex === kuisData[currentKuisIndex].jawaban;
+
+      // Simpan jawaban user
+      userAnswers.push({
+        questionIndex: currentKuisIndex,
+        userAnswer: userAnswerIndex,
+        correctAnswer: kuisData[currentKuisIndex].jawaban,
+        isCorrect: isCorrect,
+      });
+
+      if (isCorrect) {
         score++;
       }
     }
@@ -575,6 +585,56 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="score-item-detail"><span class="score-label">Hb Akhir:</span><span class="score-value">${hbLevel.toFixed(
           1,
         )} g/dL</span></div>
+      </div>
+
+      <div class="kuis-review">
+        <h3>📝 Review Jawaban Kuis</h3>
+        ${userAnswers
+          .map((answer, index) => {
+            const soal = kuisData[answer.questionIndex];
+            return `
+            <div class="review-item">
+              <div class="review-question">
+                <span class="question-text">${soal.soal}</span>
+                <span class="question-points">${answer.isCorrect ? '+1' : '0'}</span>
+              </div>
+              <div class="review-options">
+                ${soal.opsi
+                  .map((opsi, opsiIndex) => {
+                    const isUserAnswer = opsiIndex === answer.userAnswer;
+                    const isCorrectAnswer = opsiIndex === answer.correctAnswer;
+                    let className = 'review-option';
+                    let icon = '';
+                    if (isUserAnswer && !answer.isCorrect) {
+                      className += ' incorrect';
+                      icon = '❌';
+                    } else if (isCorrectAnswer) {
+                      className += ' correct';
+                      icon = '✅';
+                    }
+                    return `<div class="${className}">${opsi} ${icon}</div>`;
+                  })
+                  .join('')}
+              </div>
+            </div>
+          `;
+          })
+          .join('')}
+      </div>
+
+      <div class="simulasi-review">
+        <h3>⏰ Review Ketepatan Minum Tablet</h3>
+        <div class="review-item">
+          <div class="review-question">
+            <span class="question-text">Minum tablet Fe sebelum jam 16:00</span>
+            <span class="question-points">${kepatuhan > 0 ? '+10' : '0'}</span>
+          </div>
+          <div class="review-options">
+            <div class="review-option ${kepatuhan > 0 ? 'correct' : 'incorrect'}">
+              ${kepatuhan > 0 ? 'Tepat waktu' : 'Terlambat'} ${kepatuhan > 0 ? '✅' : '❌'}
+            </div>
+          </div>
+        </div>
       </div>
     `;
 

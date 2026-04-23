@@ -97,42 +97,131 @@ body {
   overflow: hidden;
   border-right: 3px solid #667eea;
   white-space: nowrap;
-  animation: typewriter 3s steps(40, end), blink 0.8s infinite;
+  animation:
+    typewriter 3s steps(40, end),
+    blink 0.8s infinite;
+}
+
+/* Kuis Review Styles */
+.kuis-review {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.kuis-review h3 {
+  text-align: center;
+  color: var(--secondary-blue);
+  font-size: 1.4em;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.review-item {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.review-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 1em;
+}
+
+.question-text {
+  flex: 1;
+}
+
+.review-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-option {
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: white;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  font-size: 0.95em;
+}
+
+.review-option.correct {
+  border-color: #4cd964;
+  background: #f0fff4;
+  color: #2d5a2d;
+}
+
+.review-option.incorrect {
+  border-color: #ff3b30;
+  background: #ffebee;
+  color: #8b1a1a;
+}
+
+.question-points {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-left: 10px;
+  min-width: 45px;
+  text-align: right;
+}
+
+.question-points.correct-points {
+  color: #4cd964;
+}
+
+.question-points.incorrect-points {
+  color: #ff3b30;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  #character-guru.slide-guru {
-    transform: translateX(97%) translateY(-40%);
+  .kuis-review {
+    padding: 15px;
   }
 
-  .food-options {
-    grid-template-columns: 1fr;
+  .kuis-review h3 {
+    font-size: 1.2em;
+  }
+
+  .review-item {
+    padding: 12px;
+  }
+
+  .review-question {
+    font-size: 1em;
+  }
+
+  .review-option {
+    padding: 8px 12px;
+    font-size: 0.9em;
   }
 }
 
 @media (max-width: 576px) {
-  #character-guru.slide-guru {
-    transform: translateX(67%) translateY(-40%);
+  .kuis-review h3 {
+    font-size: 18px;
   }
 
-  .sarapan-header h2,
-  .hasil-card h2 {
-    font-size: 26px;
+  .review-item {
+    margin-bottom: 20px;
   }
 
-  .food-icon {
-    font-size: 3em;
+  .review-question {
+    font-size: 16px;
   }
 
-  .food-card h3 {
-    font-size: 16;
-  }
-  .food-card p {
-    font-size: 14;
-  }
-
-  .energy-change {
+  .review-option {
     font-size: 14px;
   }
 }

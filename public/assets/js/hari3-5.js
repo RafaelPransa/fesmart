@@ -19,8 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentKnowledge = userData.totalKnowledge || 0;
   let currentCompliance = userData.totalCompliance || 0;
   let currentHb = parseFloat(
-    userData.progress?.hari2?.hbLevel || userData.initialHb || 12.0
+    userData.progress?.hari2?.hbLevel || userData.initialHb || 12.0,
   );
+  let userAnswer = [];
+
+  // Tracking untuk detail result
+  let hari3UserAnswers = { zatBesi: [], penghambat: [] };
+  let hari4UserChoice = null;
+  let hari5UserAnswers = [];
 
   // --- 3. DOM ELEMENTS ---
   const containerOpening = document.querySelector('.container-opening');
@@ -91,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
     const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]'
+      '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) {
       soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
@@ -332,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
       card.innerHTML = `<span>${item.icon}</span>${item.name}`;
 
       card.addEventListener('dragstart', (e) =>
-        e.dataTransfer.setData('text', e.target.id)
+        e.dataTransfer.setData('text', e.target.id),
       );
       container.appendChild(card);
     });
@@ -359,6 +365,15 @@ document.addEventListener('DOMContentLoaded', function () {
       clone.style.transform = 'scale(0.8)';
       clone.style.margin = '5px';
       zone.querySelector('.dropped-items').appendChild(clone);
+
+      // Track user answer
+      const itemName = el.textContent.trim();
+      if (zone.dataset.category === 'zat-besi') {
+        hari3UserAnswers.zatBesi.push(itemName);
+      } else if (zone.dataset.category === 'penghambat') {
+        hari3UserAnswers.penghambat.push(itemName);
+      }
+
       el.remove();
       feedback.textContent = '✅ Benar!';
       feedback.className = 'game-feedback success';
@@ -370,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function finishHari3() {
     const correctCount = document.querySelectorAll(
-      '.dropped-items .menu-card'
+      '.dropped-items .menu-card',
     ).length;
     dayScore = correctCount * 15;
     if (correctCount === 6) dayScore += 10;
@@ -418,12 +433,24 @@ document.addEventListener('DOMContentLoaded', function () {
     if (type === 'sehat') {
       window.playCoolClickSound();
       dayScore = 10;
+      hari4UserChoice = {
+        choice: 'sehat',
+        icon: '🍗',
+        name: 'Hati Ayam',
+        correct: true,
+      };
       feedback.innerHTML =
         "<span style='color:green'>✅ Pilihan Tepat! Energi pulih & kaya zat besi.</span>";
       if (charImg)
         charImg.src = getCharacterImage(userData.character, 'senang');
     } else {
       dayScore = 0;
+      hari4UserChoice = {
+        choice: 'junk',
+        icon: '🍔',
+        name: 'Junk Food',
+        correct: false,
+      };
       feedback.innerHTML =
         "<span style='color:red'>❌ Kurang Tepat. Junk food menghambat penyerapan.</span>";
       if (charImg)
@@ -482,10 +509,10 @@ document.addEventListener('DOMContentLoaded', function () {
                       <label>
                           <input type="radio" name="jawaban" value="${i}">
                           <span class="opsi-text">${String.fromCharCode(
-                            65 + i
+                            65 + i,
                           )}. ${opt}</span>
                       </label>
-                  `
+                  `,
                     )
                     .join('')}
               </div>
@@ -514,8 +541,22 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
+        const userAnswerIndex = parseInt(checked.value);
+        const isCorrect = userAnswerIndex === k.jawaban;
+
+        // Track jawaban user
+        hari5UserAnswers.push({
+          questionIndex: kuisIndex,
+          question: k.soal,
+          options: k.opsi,
+          userAnswer: userAnswerIndex,
+          correctAnswer: k.jawaban,
+          isCorrect: isCorrect,
+          points: isCorrect ? k.score : 0,
+        });
+
         // LOGIKA SCORING LANGSUNG DI SINI (TANPA FEEDBACK ALERT)
-        if (parseInt(checked.value) === k.jawaban) {
+        if (isCorrect) {
           kuisTotalScore += k.score;
         }
 
@@ -579,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // UI Hasil
     const hasilMsg = document.getElementById('hasil-message');
-    hasilMsg.innerHTML = `
+    let reviewHtml = `
         <div class="score-detail">
             <div class="score-item-detail"><span class="score-label">Poin Hari Ini:</span><span class="score-value">+${dayScore}</span></div>
             <div class="score-item-detail"><span class="score-label">Total Pengetahuan:</span><span class="score-value">${currentKnowledge}</span></div>
@@ -587,6 +628,114 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="score-item-detail total-item"><span class="score-label">HB Terkini:</span><span class="score-value total-value">${currentHb} g/dL</span></div>
         </div>
     `;
+
+    // TAMBAH REVIEW SESUAI HARI
+    if (currentDay === 3) {
+      reviewHtml += `
+        <div class="hari-review">
+          <h3>📝 Review Jawaban - Hari 3</h3>
+          <div class="review-section">
+            <h4>✍️ Jawaban Anda</h4>
+            <div class="category-review">
+              <div class="category-box penghambat-box">
+                <h5>❌ Penghambat Penyerapan Fe</h5>
+                <div class="category-items">
+                  ${hari3UserAnswers.penghambat.length > 0 ? hari3UserAnswers.penghambat.map((item) => `<span class="item-badge">${item}</span>`).join('') : '<span class="empty-text">-</span>'}
+                </div>
+              </div>
+              <div class="category-box zatbesi-box">
+                <h5>✅ Sumber Zat Besi</h5>
+                <div class="category-items">
+                  ${hari3UserAnswers.zatBesi.length > 0 ? hari3UserAnswers.zatBesi.map((item) => `<span class="item-badge">${item}</span>`).join('') : '<span class="empty-text">-</span>'}
+                </div>
+              </div>
+            </div>
+            <div class="answer-score">Selamat jawaban anda sudah benar.</div>
+            <div class="answer-score">Poin yang didapat: <strong>+${dayScore}</strong></div>
+          </div>
+        </div>
+      `;
+    } else if (currentDay === 4) {
+      const isCorrect = hari4UserChoice?.correct || false;
+      const choice = hari4UserChoice || {
+        icon: '?',
+        name: 'Tidak dipilih',
+        choice: 'none',
+      };
+      reviewHtml += `
+        <div class="hari-review">
+          <h3>📝 Review Jawaban - Hari 4</h3>
+          <div class="review-section">
+            <h4>✍️ Jawaban Anda</h4>
+            <div class="choice-display ${isCorrect ? 'correct-choice' : 'incorrect-choice'}">
+              <div class="choice-icon">${choice.icon}</div>
+              <div class="choice-details">
+                <div class="choice-name">${choice.name}</div>
+                <div class="choice-status">${isCorrect ? '✅ Benar' : '❌ Salah'}</div>
+              </div>
+              <div class="choice-points">+${dayScore}</div>
+            </div>
+            ${
+              !isCorrect
+                ? `
+              <div class="correct-answer-display">
+                <h5>✓ Jawaban yang Benar</h5>
+                <div class="choice-display correct-choice">
+                  <div class="choice-icon">🍗</div>
+                  <div class="choice-details">
+                    <div class="choice-name">Hati Ayam</div>
+                    <div class="choice-status">✅ Sumber Zat Besi</div>
+                  </div>
+                </div>
+              </div>
+            `
+                : ''
+            }
+          </div>
+        </div>
+      `;
+    } else if (currentDay === 5) {
+      reviewHtml += `
+        <div class="hari-review">
+          <h3>📝 Review Jawaban - Hari 5</h3>
+          ${hari5UserAnswers
+            .map((answer, idx) => {
+              return `
+              <div class="review-item kuis-review-item">
+                <div class="review-question">
+                  <span class="question-text">${answer.question}</span>
+                  <span class="question-points ${answer.isCorrect ? 'correct-points' : 'incorrect-points'}">
+                    ${answer.isCorrect ? '+' + answer.points : '0'}
+                  </span>
+                </div>
+                <div class="review-options">
+                  ${answer.options
+                    .map((opsi, opsiIndex) => {
+                      const isUserAnswer = opsiIndex === answer.userAnswer;
+                      const isCorrectAnswer =
+                        opsiIndex === answer.correctAnswer;
+                      let className = 'review-option';
+                      let icon = '';
+                      if (isUserAnswer && !answer.isCorrect) {
+                        className += ' incorrect';
+                        icon = '❌';
+                      } else if (isCorrectAnswer) {
+                        className += ' correct';
+                        icon = '✅';
+                      }
+                      return `<div class="${className}">${opsi} ${icon}</div>`;
+                    })
+                    .join('')}
+                </div>
+              </div>
+            `;
+            })
+            .join('')}
+        </div>
+      `;
+    }
+
+    hasilMsg.innerHTML = reviewHtml;
 
     // Fetch Backend
     const titleFinal = document.getElementById('final-result-title');
