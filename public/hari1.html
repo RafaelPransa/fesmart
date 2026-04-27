@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -37,7 +37,7 @@
       </div>
 
       <div class="character" id="character-guru">
-        <img src="assets/images/characters/guru.png" alt="Guru" />
+        <img src="./assets/images/characters/guru.png" alt="Guru" />
       </div>
     </div>
 
@@ -53,7 +53,7 @@
 
       <div class="kuis-container">
         <div class="kuis-header">
-          <h2>📚 Kenali Anemia - Hari 1</h2>
+          <h2>📚 Pretest Hari 1</h2>
           <div class="progress-container">
             <div class="progress-bar">
               <div class="progress-fill" id="progress-fill"></div>
@@ -68,61 +68,6 @@
 
         <div class="navigation-buttons">
           <button id="btn-next" class="btn-nav">Selanjutnya ➡</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scene 3: Simulasi Sarapan -->
-    <div class="scene-sarapan" style="display: none">
-      <div class="sarapan-container">
-        <div class="character-sarapan" id="character-main-kuis">
-          <img
-            id="main-character-sarapan-img"
-            src=""
-            alt="Karakter Utama Berpikir"
-          />
-        </div>
-        <div class="sarapan-header">
-          <h2>
-            🍽️ Pilih Menu Sarapan
-            <span id="sarapan-character-name">[Nama]</span>
-          </h2>
-          <div class="energy-container">
-            <span class="energy-label"
-              >Energi <span id="energy-character-name">[Nama]</span>:</span
-            >
-            <div class="energy-bar">
-              <div class="energy-fill" id="energy-fill"></div>
-            </div>
-            <span class="energy-text" id="energy-text">50%</span>
-          </div>
-        </div>
-
-        <div class="food-options">
-          <div class="food-card" data-food="nasi-telur" data-energy="+30">
-            <div class="food-icon">🍛</div>
-            <h3>Nasi + Telur</h3>
-            <p>Kaya protein dan zat besi</p>
-          </div>
-
-          <div class="food-card" data-food="roti" data-energy="+15">
-            <div class="food-icon">🍞</div>
-            <h3>Roti Gandum</h3>
-            <p>Serat tinggi, energi stabil</p>
-          </div>
-
-          <div class="food-card" data-food="mie-instan" data-energy="-20">
-            <div class="food-icon">🍜</div>
-            <h3>Mie Instan</h3>
-            <p>Praktis tapi kurang gizi</p>
-          </div>
-        </div>
-
-        <div class="result-container">
-          <div class="result-message" id="result-message"></div>
-          <button id="btn-lanjut" class="btn-primary btn-hidden">
-            Lanjutkan Perjalanan
-          </button>
         </div>
       </div>
     </div>
@@ -153,7 +98,7 @@
 
     <!-- Game Controls -->
     <div class="game-controls">
-      <button class="control-btn" onclick="window.location.href='index.html'">
+      <button class="control-btn" onclick="window.location.href = 'index.html'">
         🏠 Halaman Utama
       </button>
       <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>

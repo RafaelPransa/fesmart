@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -27,8 +27,8 @@
         </button>
       </div>
 
-      <div class="character" id="character-teman">
-        <img src="assets/images/characters/teman-npc.png" alt="Teman" />
+      <div class="character" id="character-guru">
+        <img src="assets/images/characters/guru.png" alt="Guru UKS" />
       </div>
     </div>
 
@@ -57,7 +57,7 @@
             <div
               class="drop-area negative"
               data-category="penghambat"
-              ondragover="event.preventDefault();"
+              ondragover="event.preventDefault()"
             >
               <h4>❌ Penghambat Penyerapan Fe</h4>
               <div class="dropped-items" id="drop-penghambat"></div>
@@ -65,7 +65,7 @@
             <div
               class="drop-area positive"
               data-category="zat-besi"
-              ondragover="event.preventDefault();"
+              ondragover="event.preventDefault()"
             >
               <h4>✅ Sumber Zat Besi</h4>
               <div class="dropped-items" id="drop-zat-besi"></div>
@@ -117,16 +117,9 @@
     </div>
 
     <div class="scene-kuis" id="scene-kuis-harian" style="display: none">
-      <div class="character-kuis" id="character-main-kuis">
-        <img
-          id="main-character-kuis-img"
-          src=""
-          alt="Karakter Utama Berpikir"
-        />
-      </div>
       <div class="kuis-container">
         <div class="kuis-header">
-          <h2 id="kuis-harian-title">📚 Kuis Harian - Hari 5</h2>
+          <h2 id="kuis-harian-title">📚 Kuis Hari - 3</h2>
           <div class="progress-container">
             <div class="progress-bar">
               <div class="progress-fill" id="kuis-progress-fill"></div>
@@ -167,14 +160,14 @@
           <div class="hasil-message" id="hasil-message"></div>
 
           <button id="btn-next-day" class="btn-primary">
-            Lanjut ke Hari Berikutnya
+            Lanjut ke Mini Games
           </button>
         </div>
       </div>
     </div>
 
     <div class="game-controls">
-      <button class="control-btn" onclick="window.location.href='index.html'">
+      <button class="control-btn" onclick="window.location.href = 'index.html'">
         🏠 Halaman Utama
       </button>
       <button class="control-btn" onclick="toggleSound()">🔊 Sound</button>

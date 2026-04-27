@@ -3,22 +3,64 @@ body {
   background-size: cover;
 }
 
+body {
+  background: url(../backgrounds/school.jpg);
+  background-size: cover;
+}
+
 #character-main {
   transform: translateX(-400px);
-  transition: transform 1.4s ease;
+  opacity: 0;
+  transition:
+    transform 1.4s ease,
+    opacity 1.4s ease;
 }
 
 #character-main.slide-main {
   transform: translateX(0);
+  opacity: 1;
 }
 
 #character-guru {
   transform: translateX(400px);
-  transition: transform 1.4s ease;
+  opacity: 0;
+  transition:
+    transform 1.4s ease,
+    opacity 1.4s ease;
 }
 
 #character-guru.slide-guru {
   transform: translateX(0);
+  opacity: 1;
+}
+
+/* Character Speaking Animation */
+.character.speaking {
+  animation: bounce 0.6s infinite alternate;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Floating Animation for Characters */
+.character.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Food Options */
@@ -206,6 +248,28 @@ body {
     padding: 8px 12px;
     font-size: 0.9em;
   }
+
+  /* Character Responsive */
+  .character {
+    width: 250px;
+    height: auto;
+  }
+
+  .character img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Scene Opening Responsive */
+  .scene-opening {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .container-teks-opening {
+    text-align: center;
+  }
 }
 
 @media (max-width: 576px) {
@@ -223,5 +287,10 @@ body {
 
   .review-option {
     font-size: 14px;
+  }
+
+  /* Character Responsive */
+  .character {
+    width: 200px;
   }
 }

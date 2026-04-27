@@ -3,6 +3,83 @@ body {
   background-size: cover;
 }
 
+/* Scene Opening Layout */
+.scene-opening {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* gap: 100px; */
+  padding-bottom: 50px;
+  height: 100vh;
+}
+
+.character {
+  position: relative;
+}
+
+/* Character Speaking Animation */
+.character.speaking {
+  animation: bounce 0.6s infinite alternate;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Chat Bubble Styles */
+.chat-bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 280px;
+  min-width: 240px;
+  word-wrap: break-word;
+  z-index: 10;
+}
+
+#bubble-main {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-left-radius: 0;
+}
+
+#bubble-main::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 10px solid transparent;
+  border-top-color: white;
+}
+
+#bubble-teman {
+  bottom: 100%;
+  right: 50%;
+  transform: translateX(50%);
+  border-bottom-right-radius: 0;
+}
+
+#bubble-teman::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 50%;
+  transform: translateX(50%);
+  border: 10px solid transparent;
+  border-top-color: white;
+}
+
 /* Character Animations untuk Hari 2 */
 #character-main {
   transform: translateX(-400px);
@@ -10,6 +87,15 @@ body {
 }
 
 #character-main.slide-main {
+  transform: translateX(0);
+}
+
+#character-teman {
+  transform: translateX(400px);
+  transition: transform 1.4s ease;
+}
+
+#character-teman.slide-teman {
   transform: translateX(0);
 }
 
@@ -34,6 +120,10 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.container-teks-opening {
+  padding-bottom: 2rem;
 }
 
 .simulasi-header {
@@ -412,6 +502,36 @@ body {
     padding: 8px 12px;
     font-size: 0.9em;
   }
+
+  /* Chat Bubble Responsive */
+  .chat-bubble {
+    max-width: 220px;
+    min-width: 180px;
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  /* Character Responsive */
+  .character {
+    width: 250px;
+    height: auto;
+  }
+
+  .character img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Scene Opening Responsive */
+  .scene-opening {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .container-teks-opening {
+    text-align: center;
+  }
 }
 
 @media (max-width: 576px) {
@@ -430,5 +550,28 @@ body {
 
   .review-option {
     font-size: 14px;
+  }
+
+  /* Chat Bubble Responsive */
+  .chat-bubble {
+    max-width: 180px;
+    min-width: 140px;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  /* Character Responsive */
+  .character {
+    width: 200px;
+  }
+
+  /* Simulasi Header Responsive */
+  .simulasi-header h2 {
+    font-size: 2em;
+  }
+
+  .stats-container {
+    flex-direction: column;
+    gap: 20px;
   }
 }

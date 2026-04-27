@@ -23,9 +23,7 @@ async function loadPlayerDetail(id) {
     let playerData = null;
 
     try {
-      const response = await fetch(
-        `/api/admin/players/${id}`
-      );
+      const response = await fetch(`/api/admin/players/${id}`);
       if (response.ok) {
         playerData = await response.json();
       } else {
@@ -59,9 +57,8 @@ async function loadPlayerDetail(id) {
 function renderProfile(user) {
   // Avatar
   const char = user.character || 'siti';
-  document.getElementById(
-    'p-avatar'
-  ).src = `../assets/images/characters/${char}-normal.png`;
+  document.getElementById('p-avatar').src =
+    `../assets/images/characters/${char}-normal.png`;
 
   // Info Dasar
   document.getElementById('p-name').textContent = user.username;
@@ -69,9 +66,8 @@ function renderProfile(user) {
   const dateStr = user.created_at
     ? new Date(user.created_at).toLocaleDateString('id-ID')
     : 'Baru bergabung';
-  document.getElementById(
-    'p-date'
-  ).innerHTML = `<i class="ph ph-calendar-blank"></i> ${dateStr}`;
+  document.getElementById('p-date').innerHTML =
+    `<i class="ph ph-calendar-blank"></i> ${dateStr}`;
 
   // Status Badge
   const badge = document.getElementById('p-status-badge');
@@ -99,9 +95,7 @@ function renderProfile(user) {
   else document.getElementById('p-hb-fill').style.background = '#00b69b'; // Hijau
 
   // Statistik Angka
-  document.getElementById('score-knowledge').textContent =
-    user.totalKnowledge || 0;
-  document.getElementById('score-compliance').textContent =
+  document.getElementById('score-total').textContent =
     user.totalCompliance || 0;
   document.getElementById('last-day').textContent =
     user.lastPlayedDay || 'Hari 1';
@@ -194,7 +188,7 @@ function renderTimeline(user) {
     events.push({
       day: 'Hari 7 (Final)',
       desc: `Menyelesaikan game puzzle Iron Match. HB Akhir: <strong>${hbValue.toFixed(
-        1
+        1,
       )} g/dL</strong>`,
       score: 'Selesai',
       status: hbValue >= 12 ? 'good' : 'bad',

@@ -1,795 +1,379 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // --- 1. SETUP DATA USER & KONEKSI BACKEND ---
   const userData =
     JSON.parse(localStorage.getItem('fesmart_user_session')) ||
     JSON.parse(localStorage.getItem('fesmart_user'));
 
-  if (!userData) {
-    alert('Sesi habis. Silakan login kembali.');
+  if (!userData || !userData.id) {
+    alert('Sesi habis. Silakan masuk kembali.');
     window.location.href = 'index.html';
     return;
   }
 
-  // --- 2. LOGIKA HARI (3, 4, atau 5) ---
-  let currentDay =
-    parseInt(localStorage.getItem('fesmart_current_day_loop')) || 3;
-
-  // State Global
-  let dayScore = 0;
-  let currentKnowledge = userData.totalKnowledge || 0;
-  let currentCompliance = userData.totalCompliance || 0;
-  let currentHb = parseFloat(
-    userData.progress?.hari2?.hbLevel || userData.initialHb || 12.0,
-  );
-  let userAnswer = [];
-
-  // Tracking untuk detail result
-  let hari3UserAnswers = { zatBesi: [], penghambat: [] };
-  let hari4UserChoice = null;
-  let hari5UserAnswers = [];
-
-  // --- 3. DOM ELEMENTS ---
-  const containerOpening = document.querySelector('.container-opening');
   const sceneOpening = document.querySelector('.scene-opening');
-
-  // Scenes
-  const scenePilihMenu = document.querySelector('.scene-pilih-menu'); // Hari 3
-  const sceneAktivitas = document.querySelector('.scene-aktivitas'); // Hari 4
-  const sceneKuisHarian = document.getElementById('scene-kuis-harian'); // Hari 5
-  const sceneHasil = document.querySelector('.scene-hasil'); // Hasil Akhir
-
+  const sceneKuis = document.getElementById('scene-kuis-harian');
+  const sceneHasil = document.querySelector('.scene-hasil');
   const teksOpening = document.querySelector('.teks-opening');
   const btnStart = document.getElementById('btn-start');
+  const btnCheck = document.getElementById('btn-check-answer');
+  const btnNextDay = document.getElementById('btn-next-day');
+  const openingSubtitle = document.querySelector('.opening-subtitle');
   const hariTitle = document.getElementById('hari-title');
   const currentDayBtn = document.getElementById('current-day-btn');
 
-  // --- 4. AUDIO & VISUAL HELPERS ---
   const bgMusic = document.getElementById('background-music');
   const soundClick = document.getElementById('sound-click');
   const soundCoolClick = document.getElementById('cool-click');
   const soundGameClick = document.getElementById('game-click');
-  const teksOpeningSound = document.getElementById('teks-opening-sound');
 
   let isSoundOn = localStorage.getItem('fesmart_sound') !== 'off';
 
-  // --- Fungsi Global Audio ---
-  window.playClickSound = function () {
-    if (isSoundOn && soundClick) {
-      soundClick.currentTime = 0;
-      soundClick.play().catch((e) => console.log('Click sound failed:', e));
-    }
-  };
-
-  window.playCoolClickSound = function () {
-    if (isSoundOn && soundCoolClick) {
-      soundCoolClick.currentTime = 0;
-      soundCoolClick.play().catch((e) => console.log('Cool click failed:', e));
-    }
-  };
-
-  window.playGameClickSound = function () {
-    if (isSoundOn && soundGameClick) {
-      soundGameClick.currentTime = 0;
-      soundGameClick.play().catch((e) => console.log('Game click failed:', e));
-    }
-  };
-
-  window.playTeksOpeningSound = function () {
-    if (isSoundOn && teksOpeningSound) {
-      teksOpeningSound.currentTime = 0;
-      teksOpeningSound
-        .play()
-        .catch((e) => console.log('Text sound failed:', e));
-    }
-  };
-
-  window.playNotificationSound = function () {
-    if (isSoundOn && notificationSound) {
-      notificationSound.currentTime = 0;
-      notificationSound
-        .play()
-        .catch((e) => console.log('Notif sound failed:', e));
-    }
-  };
-
+  // Tambahkan ini agar HTML bisa mengenali fungsi toggleSound
   window.toggleSound = function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
-    const soundBtn = document.querySelector(
-      '.control-btn[onclick="toggleSound()"]',
-    );
-    if (soundBtn) {
-      soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
+    // Opsional: Pause music jika dimatikan
+    if (!isSoundOn && bgMusic) {
+      bgMusic.pause();
+    } else if (isSoundOn && bgMusic) {
+      bgMusic.play().catch(() => {});
     }
 
-    if (isSoundOn) playBackgroundMusic();
-    else if (bgMusic) bgMusic.pause();
-  };
-
-  window.playBackgroundMusic = function () {
-    if (isSoundOn && bgMusic && bgMusic.paused) {
-      bgMusic.volume = 0.5;
-      bgMusic.play().catch((e) => console.log('BG Music failed:', e));
-    }
+    console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
   };
 
   function getCharacterImage(characterId, emotion = 'normal') {
-    const id = characterId || 'siti';
-    return `assets/images/characters/${id}-${emotion}.png`;
+    const characterImages = {
+      siti: {
+        normal: 'assets/images/characters/siti-normal.png',
+        murung: 'assets/images/characters/siti-murung.png',
+        senang: 'assets/images/characters/siti-senang.png',
+      },
+      sari: {
+        normal: 'assets/images/characters/sari-normal.png',
+        murung: 'assets/images/characters/sari-murung.png',
+        senang: 'assets/images/characters/sari-senang.png',
+      },
+      clara: {
+        normal: 'assets/images/characters/clara-normal.png',
+        murung: 'assets/images/characters/clara-murung.png',
+        senang: 'assets/images/characters/clara-senang.png',
+      },
+    };
+    return (
+      characterImages[characterId]?.[emotion] ||
+      characterImages[characterId]?.['normal'] ||
+      'assets/images/characters/default.png'
+    );
   }
 
-  // Update Karakter Awal
-  const mainImg = document.getElementById('main-character-img');
-  if (mainImg) {
-    mainImg.src = getCharacterImage(userData.character, 'normal');
-    mainImg.alt = userData.username;
-  }
-
-  function typeWriterMultiple(lines, speed = 40, lineDelay = 800) {
-    if (!teksOpening) return;
-    let lineIndex = 0;
-    let charIndex = 0;
-    teksOpening.innerHTML = '';
-
-    function typeLine() {
-      if (lineIndex < lines.length) {
-        if (charIndex === 0 && lineIndex > 0) teksOpening.innerHTML += '<br>';
-        if (charIndex < lines[lineIndex].length) {
-          const char = lines[lineIndex].charAt(charIndex);
-          if (charIndex === 0) teksOpening.innerHTML += '<strong>';
-          teksOpening.innerHTML += char;
-          if (char === ':' && charIndex < 15)
-            teksOpening.innerHTML += '</strong>';
-          if (charIndex % 3 === 0) window.playCoolClickSound(); // Sound effect
-          charIndex++;
-          setTimeout(typeLine, speed);
-        } else {
-          lineIndex++;
-          charIndex = 0;
-          setTimeout(typeLine, lineDelay);
-        }
-      }
-    }
-    typeLine();
-  }
-
-  // --- 5. DATA PERMAINAN LENGKAP ---
-
-  // DATA HARI 3: MENU GAME
-  const menuGameData = [
-    { name: 'Hati Ayam', icon: '🍗', category: 'zat-besi' },
-    { name: 'Bayam', icon: '🍃', category: 'zat-besi' },
-    { name: 'Daging Sapi', icon: '🥩', category: 'zat-besi' },
-    { name: 'Teh', icon: '🍵', category: 'penghambat' },
-    { name: 'Kopi', icon: '☕', category: 'penghambat' },
-    { name: 'Junk Food', icon: '🍔', category: 'penghambat' },
-  ].sort(() => Math.random() - 0.5);
-
-  // DATA HARI 5: KUIS LENGKAP
-  const masterDailyKuis = [
+  const kuisData = [
     {
-      soal: '1. Apa penyebab utama anemia pada remaja putri?',
+      soal: '1. Apa itu anemia?',
       opsi: [
-        'Kurang minum air putih',
-        'Kekurangan zat besi',
-        'Terlalu sering olahraga',
-        'Kebanyakan tidur',
+        'Kekurangan zat cair',
+        'Kondisi kurangnya sel darah merah atau hemoglobin',
+        'Kelebihan gula darah',
+        'Infeksi virus',
       ],
-      jawaban: 1, // Kekurangan zat besi
-      score: 20,
+      jawaban: 1,
     },
     {
-      soal: '2. Kebiasaan makan apa yang dapat meningkatkan risiko anemia?',
+      soal: '2. Salah satu gejala anemia adalah…',
       opsi: [
-        'Jarang makan sumber protein hewani',
-        'Sering makan sayuran hijau',
-        'Minum jus buah setiap hari',
-        'Makan tiga kali sehari',
+        'Mudah lelah',
+        'Nafsu makan meningkat',
+        'Berat badan naik',
+        'Sulit tidur',
       ],
-      jawaban: 0, // Jarang makan sumber protein hewani
-      score: 20,
+      jawaban: 0,
     },
     {
-      soal: '3. Kondisi fisiologis apa yang membuat remaja putri lebih berisiko anemia?',
-      opsi: [
-        'Pertumbuhan rambut',
-        'Menstruasi',
-        'Suhu tubuh menurun',
-        'Tidak suka olahraga',
-      ],
-      jawaban: 1, // Menstruasi
-      score: 20,
+      soal: '3. Kulit pucat pada remaja putri biasanya menandakan…',
+      opsi: ['Dehidrasi', 'Anemia', 'Alergi', 'Kurang tidur'],
+      jawaban: 1,
     },
     {
-      soal: '4. Sikap mana yang dapat menyebabkan anemia?',
+      soal: '4. Mengapa remaja putri rentan anemia?',
       opsi: [
-        'Mengabaikan pola makan seimbang',
-        'Mengonsumsi tablet Fe sesuai anjuran',
-        'Rajin makan makanan tinggi zat besi',
-        'Olahraga teratur',
+        'Karena sering berolahraga',
+        'Karena menstruasi',
+        'Karena terlalu banyak tidur',
+        'Karena minum air putih',
       ],
-      jawaban: 0, // Mengabaikan pola makan seimbang
-      score: 20,
+      jawaban: 1,
     },
     {
-      soal: '5. Mengapa minum teh setelah makan dapat meningkatkan risiko anemia?',
+      soal: '5. Tablet Fe biasanya diberikan untuk…',
       opsi: [
-        'Karena teh membuat kantuk',
-        'Karena teh menghambat penyerapan zat besi',
-        'Karena teh membuat perut kembung',
-        'Karena teh menambah nafsu makan',
+        'Menambah berat badan',
+        'Memperbaiki nafsu makan',
+        'Menambah cadangan zat besi',
+        'Meningkatkan tinggi badan',
       ],
-      jawaban: 1, // Menghambat penyerapan zat besi
-      score: 20,
+      jawaban: 2,
+    },
+    {
+      soal: '6. Tanda umum anemia lain yang sering muncul adalah…',
+      opsi: ['Kulit kering', 'Pusing', 'Cepat lapar', 'Bad mood'],
+      jawaban: 1,
+    },
+    {
+      soal: '7. Zat besi berperan penting untuk membentuk…',
+      opsi: [
+        'Protein otot',
+        'Sel darah merah',
+        'Tulang kuat',
+        'Hormon pertumbuhan',
+      ],
+      jawaban: 1,
+    },
+    {
+      soal: '8. Makanan kaya zat besi contohnya adalah…',
+      opsi: ['Es krim', 'Bayam', 'Keripik kentang', 'Minuman ringan'],
+      jawaban: 1,
+    },
+    {
+      soal: '9. Penggunaan tablet Fe membantu…',
+      opsi: [
+        'Mencegah anemia',
+        'Membuat cepat marah',
+        'Mengurangi aktivitas',
+        'Membuat susah tidur',
+      ],
+      jawaban: 0,
+    },
+    {
+      soal: '10. Peran UKS dalam anemia adalah…',
+      opsi: [
+        'Membagikan tablet Fe dan edukasi',
+        'Melarang olahraga',
+        'Menyuruh tidur siang',
+        'Menjalankan diet ketat',
+      ],
+      jawaban: 0,
     },
   ];
 
-  // --- 6. INIT GAME SEQUENCE ---
-  initGame();
+  let currentIndex = 0;
+  let userAnswers = [];
 
-  function initGame() {
-    // Update Judul Hari
-    if (hariTitle) hariTitle.textContent = `Hari - ${currentDay}`;
-    if (currentDayBtn) currentDayBtn.textContent = currentDay;
-
-    // Config Teks Tombol & Subtitle
-    const openingSubtitle = document.querySelector('.opening-subtitle');
-    let btnText = 'Mulai';
-    let subtitle = '';
-
-    if (currentDay === 3) {
-      btnText = 'Mulai Tantangan Menu';
-      subtitle = 'Memilih Makanan Zat Besi';
-    } else if (currentDay === 4) {
-      btnText = 'Mulai Aktivitas';
-      subtitle = 'Simulasi Energi Harian';
-    } else if (currentDay === 5) {
-      btnText = 'Mulai Kuis Harian';
-      subtitle = 'Uji Pengetahuan Anemia';
-    }
-
-    if (btnStart) btnStart.textContent = btnText;
-    if (openingSubtitle) openingSubtitle.textContent = subtitle;
-
-    // Animasi Opening
-    if (containerOpening) {
-      setTimeout(() => {
-        containerOpening.style.transform = 'translateY(-100vh)';
-        containerOpening.style.transition = 'transform 1.5s ease';
-        setTimeout(() => {
-          if (sceneOpening) sceneOpening.style.opacity = '1';
-          startOpeningScene();
-        }, 1600);
-      }, 2000);
-    }
+  function playSound(audio) {
+    if (!isSoundOn || !audio) return;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   }
 
-  function startOpeningScene() {
-    const charMain = document.getElementById('character-main');
-    const charTeman = document.getElementById('character-teman');
+  window.toggleSound = function () {
+    isSoundOn = !isSoundOn;
+    localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
+  };
 
-    if (charMain) charMain.classList.add('slide-main');
-    if (charTeman) charTeman.classList.add('slide-teman');
+  function typeWriter(lines, speed = 35, delay = 800) {
+    if (!teksOpening) return;
+    teksOpening.innerHTML = '';
+    let lineIndex = 0;
+    let charIndex = 0;
 
-    setTimeout(() => {
-      showDialog();
-    }, 1500);
-
-    setTimeout(() => {
-      if (btnStart) {
-        btnStart.classList.remove('btn-hidden');
-        btnStart.style.opacity = '1';
+    function nextChar() {
+      const currentLine = lines[lineIndex];
+      if (charIndex < currentLine.length) {
+        teksOpening.innerHTML += currentLine.charAt(charIndex);
+        charIndex += 1;
+        if (charIndex % 3 === 0) playSound(soundCoolClick);
+        setTimeout(nextChar, speed);
+      } else {
+        lineIndex += 1;
+        charIndex = 0;
+        if (lineIndex < lines.length) {
+          teksOpening.innerHTML += '<br><br>';
+          setTimeout(nextChar, delay);
+        }
       }
-    }, 9000);
+    }
+    nextChar();
+  }
+
+  function saveProgress(lastDay, totalScore) {
+    fetch('/api/save-progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userData.id,
+        totalKnowledge: 0,
+        totalCompliance: totalScore,
+        finalHb: userData.finalHb || 0,
+        lastDay,
+        isCompleted: false,
+      }),
+    }).catch(() => {
+      console.warn('Gagal menyimpan progress Hari 3');
+    });
+  }
+
+  function init() {
+    if (hariTitle) hariTitle.textContent = 'Hari - 3';
+    if (openingSubtitle) openingSubtitle.textContent = 'Posttest Anemia';
+    if (currentDayBtn) currentDayBtn.textContent = '3';
+
+    // Update character image
+    const imgEl = document.getElementById('main-character-img');
+    if (imgEl) imgEl.src = getCharacterImage(userData.character || 'siti');
+
+    setTimeout(() => {
+      const containerOpening = document.querySelector('.container-opening');
+      if (containerOpening) {
+        containerOpening.style.transform = 'translateY(-100vh)';
+        containerOpening.style.transition = 'transform 1.2s ease';
+      }
+      setTimeout(() => {
+        if (sceneOpening) sceneOpening.style.opacity = '1';
+        // Add slide animations
+        const characterMain = document.getElementById('character-main');
+        const characterGuru = document.getElementById('character-guru');
+        if (characterMain) characterMain.classList.add('slide-main');
+        if (characterGuru) characterGuru.classList.add('slide-guru');
+        showDialog();
+      }, 1200);
+    }, 1500);
+    playSound(bgMusic);
   }
 
   function showDialog() {
-    let specificMsg = '';
-    if (currentDay === 3)
-      specificMsg =
-        'Hari ini kita belajar membedakan makanan sumber zat besi dan penghambatnya.';
-    else if (currentDay === 4)
-      specificMsg =
-        'Kamu begadang semalam. Pilih asupan yang tepat untuk memulihkan energimu!';
-    else if (currentDay === 5)
-      specificMsg = 'Ayo kita uji pemahamanmu tentang anemia lewat kuis ini!';
-
-    const dialogLines = [
-      `TEMAN: "Hai ${userData.username || 'Kawan'}! ${specificMsg}"`,
-      `PETUALANG: "Siap! Aku akan melakukan yang terbaik."`,
+    const lines = [
+      'GURU UKS: "Sekarang kita mulai posttest. Setiap jawaban benar mendapatkan 1 poin."',
+      `${userData.username || 'Petualang'}: "Siap, aku akan jawab dengan teliti."`,
     ];
-    typeWriterMultiple(dialogLines, 40, 800);
+    typeWriter(lines);
+    if (btnStart) btnStart.classList.remove('btn-hidden');
   }
 
-  // --- ROUTER TOMBOL START ---
-  if (btnStart) {
-    btnStart.addEventListener('click', () => {
-      window.playGameClickSound();
-      if (currentDay === 3) startHari3MenuGame();
-      else if (currentDay === 4) startHari4Aktivitas();
-      else if (currentDay === 5) startHari5Kuis();
-    });
+  function startKuis() {
+    playSound(soundGameClick);
+    if (sceneOpening) sceneOpening.style.display = 'none';
+    if (sceneKuis) sceneKuis.style.display = 'block';
+    loadQuestion(currentIndex);
   }
 
-  // ============================================================
-  // HARI 3: PILIH MENU (FULL 6 ITEMS)
-  // ============================================================
-  function startHari3MenuGame() {
-    sceneOpening.style.display = 'none';
-    scenePilihMenu.style.display = 'block';
+  function loadQuestion(index) {
+    const question = kuisData[index];
+    const progressFill = document.getElementById('kuis-progress-fill');
+    const progressText = document.getElementById('kuis-progress-text');
+    const kuisContent = document.getElementById('kuis-harian-content');
 
-    const charImg = document.getElementById('main-character-menu-img');
-    if (charImg)
-      charImg.src = getCharacterImage(userData.character, 'berpikir');
+    if (progressFill)
+      progressFill.style.width = `${((index + 1) / kuisData.length) * 100}%`;
+    if (progressText)
+      progressText.textContent = `${index + 1}/${kuisData.length}`;
 
-    const container = document.getElementById('menu-options-container');
-    container.innerHTML = '';
-    document.getElementById('drop-zat-besi').innerHTML = '';
-    document.getElementById('drop-penghambat').innerHTML = '';
-
-    // Render 6 Kartu
-    menuGameData.forEach((item, i) => {
-      const card = document.createElement('div');
-      card.className = 'menu-card';
-      card.draggable = true;
-      card.id = `drag-${i}`;
-      card.dataset.category = item.category;
-      card.innerHTML = `<span>${item.icon}</span>${item.name}`;
-
-      card.addEventListener('dragstart', (e) =>
-        e.dataTransfer.setData('text', e.target.id),
-      );
-      container.appendChild(card);
-    });
-
-    document.querySelectorAll('.drop-area').forEach((area) => {
-      area.addEventListener('dragover', (e) => e.preventDefault());
-      area.addEventListener('drop', handleDrop);
-    });
-
-    document.getElementById('btn-submit-menu').onclick = finishHari3;
-  }
-
-  function handleDrop(e) {
-    e.preventDefault();
-    const id = e.dataTransfer.getData('text');
-    const el = document.getElementById(id);
-    const zone = e.target.closest('.drop-area');
-    const feedback = document.getElementById('menu-game-feedback');
-
-    if (el && zone && el.dataset.category === zone.dataset.category) {
-      window.playCoolClickSound();
-      const clone = el.cloneNode(true);
-      clone.draggable = false;
-      clone.style.transform = 'scale(0.8)';
-      clone.style.margin = '5px';
-      zone.querySelector('.dropped-items').appendChild(clone);
-
-      // Track user answer
-      const itemName = el.textContent.trim();
-      if (zone.dataset.category === 'zat-besi') {
-        hari3UserAnswers.zatBesi.push(itemName);
-      } else if (zone.dataset.category === 'penghambat') {
-        hari3UserAnswers.penghambat.push(itemName);
-      }
-
-      el.remove();
-      feedback.textContent = '✅ Benar!';
-      feedback.className = 'game-feedback success';
-    } else {
-      feedback.textContent = '⚠️ Salah tempat!';
-      feedback.className = 'game-feedback error';
-    }
-  }
-
-  function finishHari3() {
-    const correctCount = document.querySelectorAll(
-      '.dropped-items .menu-card',
-    ).length;
-    dayScore = correctCount * 15;
-    if (correctCount === 6) dayScore += 10;
-    showHasilAkhir();
-  }
-
-  // ============================================================
-  // HARI 4: SIMULASI AKTIVITAS
-  // ============================================================
-  function startHari4Aktivitas() {
-    sceneOpening.style.display = 'none';
-    sceneAktivitas.style.display = 'block';
-
-    const charImg = document.getElementById('main-character-simulasi-img');
-    if (charImg)
-      charImg.src = getCharacterImage(userData.character, 'cape-olahraga');
-
-    document.getElementById('aktivitas-header-title').textContent =
-      'Simulasi Belajar Malam';
-
-    // Render Pilihan Makanan
-    const card = document.getElementById('daily-action-card');
-    card.innerHTML = `
-        <h3>Belajar Kelompok</h3>
-        <p>Kamu begadang semalam suntuk untuk belajar. Energi turun drastis! Pilih makanan untuk memulihkan tenaga.</p>
-        <div class="food-options-small">
-            <div class="food-card-small" onclick="pilihMakananHari4('sehat')">
-                <div style="font-size:2em">🍗</div><div>Hati Ayam</div>
-            </div>
-            <div class="food-card-small" onclick="pilihMakananHari4('junk')">
-                <div style="font-size:2em">🍔</div><div>Junk Food</div>
-            </div>
-        </div>
-        <p id="simulasi-feedback" style="margin-top:20px; font-weight:bold;"></p>
-    `;
-
-    const oldBtn = document.getElementById('btn-next-step');
-    if (oldBtn) oldBtn.style.display = 'none';
-  }
-
-  window.pilihMakananHari4 = function (type) {
-    const feedback = document.getElementById('simulasi-feedback');
-    const charImg = document.getElementById('main-character-simulasi-img');
-
-    if (type === 'sehat') {
-      window.playCoolClickSound();
-      dayScore = 10;
-      hari4UserChoice = {
-        choice: 'sehat',
-        icon: '🍗',
-        name: 'Hati Ayam',
-        correct: true,
-      };
-      feedback.innerHTML =
-        "<span style='color:green'>✅ Pilihan Tepat! Energi pulih & kaya zat besi.</span>";
-      if (charImg)
-        charImg.src = getCharacterImage(userData.character, 'senang');
-    } else {
-      dayScore = 0;
-      hari4UserChoice = {
-        choice: 'junk',
-        icon: '🍔',
-        name: 'Junk Food',
-        correct: false,
-      };
-      feedback.innerHTML =
-        "<span style='color:red'>❌ Kurang Tepat. Junk food menghambat penyerapan.</span>";
-      if (charImg)
-        charImg.src = getCharacterImage(userData.character, 'murung');
-    }
-
-    setTimeout(showHasilAkhir, 1500);
-  };
-
-  // ============================================================
-  // HARI 5: KUIS HARIAN (NO BUTTON CEK, ONLY NEXT)
-  // ============================================================
-  function startHari5Kuis() {
-    sceneOpening.style.display = 'none';
-    sceneKuisHarian.style.display = 'block';
-
-    const charImg = document.getElementById('main-character-kuis-img');
-    if (charImg)
-      charImg.src = getCharacterImage(userData.character, 'berpikir');
-
-    kuisIndex = 0;
-    kuisTotalScore = 0;
-    renderSoal();
-  }
-
-  let kuisIndex = 0;
-  let kuisTotalScore = 0;
-
-  function renderSoal() {
-    // Cek jika sudah selesai semua soal
-    if (kuisIndex >= masterDailyKuis.length) {
-      dayScore = kuisTotalScore;
-      showHasilAkhir();
-      return;
-    }
-
-    const k = masterDailyKuis[kuisIndex];
-    const container = document.getElementById('kuis-harian-content');
-
-    // Update Progress Bar
-    document.getElementById('kuis-progress-text').textContent = `${
-      kuisIndex + 1
-    }/${masterDailyKuis.length}`;
-    document.getElementById('kuis-progress-fill').style.width = `${
-      ((kuisIndex + 1) / masterDailyKuis.length) * 100
-    }%`;
-
-    // Render 4 Opsi Jawaban
-    container.innerHTML = `
-          <div class="soal-kuis slide-up">
-              <h3>${k.soal}</h3>
-              <div class="opsi-jawaban">
-                  ${k.opsi
-                    .map(
-                      (opt, i) => `
-                      <label>
-                          <input type="radio" name="jawaban" value="${i}">
-                          <span class="opsi-text">${String.fromCharCode(
-                            65 + i,
-                          )}. ${opt}</span>
-                      </label>
-                  `,
-                    )
-                    .join('')}
-              </div>
-          </div>
-      `;
-
-    // BUTTON SETUP (LANGSUNG NEXT)
-    const btnCheck = document.getElementById('btn-check-answer');
-    const btnNext = document.getElementById('btn-finish-day');
-
-    // Sembunyikan tombol cek lama
-    if (btnCheck) btnCheck.style.display = 'none';
-
-    // Tampilkan tombol Next
-    if (btnNext) {
-      btnNext.style.display = 'block';
-      btnNext.textContent =
-        kuisIndex === masterDailyKuis.length - 1
-          ? 'Selesai Kuis'
-          : 'Soal Berikutnya ➡';
-
-      btnNext.onclick = () => {
-        const checked = document.querySelector('input[name="jawaban"]:checked');
-        if (!checked) {
-          alert('Pilih jawaban terlebih dahulu!');
-          return;
-        }
-
-        const userAnswerIndex = parseInt(checked.value);
-        const isCorrect = userAnswerIndex === k.jawaban;
-
-        // Track jawaban user
-        hari5UserAnswers.push({
-          questionIndex: kuisIndex,
-          question: k.soal,
-          options: k.opsi,
-          userAnswer: userAnswerIndex,
-          correctAnswer: k.jawaban,
-          isCorrect: isCorrect,
-          points: isCorrect ? k.score : 0,
-        });
-
-        // LOGIKA SCORING LANGSUNG DI SINI (TANPA FEEDBACK ALERT)
-        if (isCorrect) {
-          kuisTotalScore += k.score;
-        }
-
-        window.playCoolClickSound();
-        kuisIndex++;
-        renderSoal();
-      };
-    }
-
-    // Sound pilih jawaban
-    document.querySelectorAll('input[name="jawaban"]').forEach((radio) => {
-      radio.addEventListener('change', () => window.playClickSound());
-    });
-  }
-
-  // ============================================================
-  // HASIL AKHIR & BACKEND SAVE
-  // ============================================================
-  function showHasilAkhir() {
-    scenePilihMenu.style.display = 'none';
-    sceneAktivitas.style.display = 'none';
-    sceneKuisHarian.style.display = 'none';
-    sceneHasil.style.display = 'block';
-
-    window.playGameClickSound();
-
-    const charHasil = document.getElementById('main-character-hasil-img');
-    if (charHasil)
-      charHasil.src = getCharacterImage(userData.character, 'senang');
-
-    // Distribusi Skor ke Global
-    let knowledgeGain = 0;
-    let complianceGain = 0;
-
-    if (currentDay === 3) {
-      knowledgeGain = Math.ceil(dayScore / 10);
-    } else if (currentDay === 4) {
-      complianceGain = dayScore;
-    } else if (currentDay === 5) {
-      knowledgeGain = Math.ceil(dayScore / 5);
-    }
-
-    currentKnowledge += knowledgeGain;
-    currentCompliance += complianceGain;
-
-    if (dayScore > 50 || (currentDay === 4 && dayScore > 0)) {
-      currentHb = (currentHb + 0.2).toFixed(1);
-    }
-
-    // Update Local Data
-    userData.totalKnowledge = currentKnowledge;
-    userData.totalCompliance = currentCompliance;
-    userData.progress[`hari${currentDay}`] = {
-      completed: true,
-      score: dayScore,
-      hbLevel: currentHb,
-    };
-
-    localStorage.setItem('fesmart_user', JSON.stringify(userData));
-    localStorage.setItem('fesmart_user_session', JSON.stringify(userData));
-
-    // UI Hasil
-    const hasilMsg = document.getElementById('hasil-message');
-    let reviewHtml = `
-        <div class="score-detail">
-            <div class="score-item-detail"><span class="score-label">Poin Hari Ini:</span><span class="score-value">+${dayScore}</span></div>
-            <div class="score-item-detail"><span class="score-label">Total Pengetahuan:</span><span class="score-value">${currentKnowledge}</span></div>
-            <div class="score-item-detail"><span class="score-label">Total Kepatuhan:</span><span class="score-value">${currentCompliance}</span></div>
-            <div class="score-item-detail total-item"><span class="score-label">HB Terkini:</span><span class="score-value total-value">${currentHb} g/dL</span></div>
-        </div>
-    `;
-
-    // TAMBAH REVIEW SESUAI HARI
-    if (currentDay === 3) {
-      reviewHtml += `
-        <div class="hari-review">
-          <h3>📝 Review Jawaban - Hari 3</h3>
-          <div class="review-section">
-            <h4>✍️ Jawaban Anda</h4>
-            <div class="category-review">
-              <div class="category-box penghambat-box">
-                <h5>❌ Penghambat Penyerapan Fe</h5>
-                <div class="category-items">
-                  ${hari3UserAnswers.penghambat.length > 0 ? hari3UserAnswers.penghambat.map((item) => `<span class="item-badge">${item}</span>`).join('') : '<span class="empty-text">-</span>'}
-                </div>
-              </div>
-              <div class="category-box zatbesi-box">
-                <h5>✅ Sumber Zat Besi</h5>
-                <div class="category-items">
-                  ${hari3UserAnswers.zatBesi.length > 0 ? hari3UserAnswers.zatBesi.map((item) => `<span class="item-badge">${item}</span>`).join('') : '<span class="empty-text">-</span>'}
-                </div>
-              </div>
-            </div>
-            <div class="answer-score">Selamat jawaban anda sudah benar.</div>
-            <div class="answer-score">Poin yang didapat: <strong>+${dayScore}</strong></div>
-          </div>
-        </div>
-      `;
-    } else if (currentDay === 4) {
-      const isCorrect = hari4UserChoice?.correct || false;
-      const choice = hari4UserChoice || {
-        icon: '?',
-        name: 'Tidak dipilih',
-        choice: 'none',
-      };
-      reviewHtml += `
-        <div class="hari-review">
-          <h3>📝 Review Jawaban - Hari 4</h3>
-          <div class="review-section">
-            <h4>✍️ Jawaban Anda</h4>
-            <div class="choice-display ${isCorrect ? 'correct-choice' : 'incorrect-choice'}">
-              <div class="choice-icon">${choice.icon}</div>
-              <div class="choice-details">
-                <div class="choice-name">${choice.name}</div>
-                <div class="choice-status">${isCorrect ? '✅ Benar' : '❌ Salah'}</div>
-              </div>
-              <div class="choice-points">+${dayScore}</div>
-            </div>
-            ${
-              !isCorrect
-                ? `
-              <div class="correct-answer-display">
-                <h5>✓ Jawaban yang Benar</h5>
-                <div class="choice-display correct-choice">
-                  <div class="choice-icon">🍗</div>
-                  <div class="choice-details">
-                    <div class="choice-name">Hati Ayam</div>
-                    <div class="choice-status">✅ Sumber Zat Besi</div>
-                  </div>
-                </div>
-              </div>
-            `
-                : ''
-            }
-          </div>
-        </div>
-      `;
-    } else if (currentDay === 5) {
-      reviewHtml += `
-        <div class="hari-review">
-          <h3>📝 Review Jawaban - Hari 5</h3>
-          ${hari5UserAnswers
-            .map((answer, idx) => {
-              return `
-              <div class="review-item kuis-review-item">
-                <div class="review-question">
-                  <span class="question-text">${answer.question}</span>
-                  <span class="question-points ${answer.isCorrect ? 'correct-points' : 'incorrect-points'}">
-                    ${answer.isCorrect ? '+' + answer.points : '0'}
-                  </span>
-                </div>
-                <div class="review-options">
-                  ${answer.options
-                    .map((opsi, opsiIndex) => {
-                      const isUserAnswer = opsiIndex === answer.userAnswer;
-                      const isCorrectAnswer =
-                        opsiIndex === answer.correctAnswer;
-                      let className = 'review-option';
-                      let icon = '';
-                      if (isUserAnswer && !answer.isCorrect) {
-                        className += ' incorrect';
-                        icon = '❌';
-                      } else if (isCorrectAnswer) {
-                        className += ' correct';
-                        icon = '✅';
-                      }
-                      return `<div class="${className}">${opsi} ${icon}</div>`;
-                    })
-                    .join('')}
-                </div>
-              </div>
-            `;
-            })
+    if (!kuisContent) return;
+    kuisContent.innerHTML = `
+      <div class="soal-kuis slide-up">
+        <h3>${question.soal}</h3>
+        <div class="opsi-jawaban">
+          ${question.opsi
+            .map(
+              (opsi, i) => `
+                <label class="option-row" data-index="${i}">
+                  <input type="radio" name="jawaban" value="${i}" />
+                  <span class="opsi-text">${String.fromCharCode(65 + i)}. ${opsi}</span>
+                </label>`,
+            )
             .join('')}
         </div>
-      `;
+      </div>`;
+
+    if (btnCheck) {
+      btnCheck.textContent =
+        index === kuisData.length - 1 ? 'Lihat Hasil' : 'Selanjutnya ➡';
     }
-
-    hasilMsg.innerHTML = reviewHtml;
-
-    // Fetch Backend
-    const titleFinal = document.getElementById('final-result-title');
-    titleFinal.textContent = `🎉Selamat! Hari ${currentDay} Selesai`;
-
-    const btnNextDay = document.getElementById('btn-next-day');
-    const isLastLoop = currentDay >= 5;
-    btnNextDay.textContent = isLastLoop
-      ? 'Simpan & Lanjut ke Hari 6'
-      : `Simpan & Lanjut ke Hari ${currentDay + 1}`;
-
-    btnNextDay.onclick = () => {
-      btnNextDay.textContent = 'Menyimpan...';
-      btnNextDay.disabled = true;
-
-      const payload = {
-        userId: userData.id,
-        totalKnowledge: currentKnowledge,
-        totalCompliance: currentCompliance,
-        finalHb: parseFloat(currentHb),
-        lastDay: `Hari ${currentDay}`,
-        isCompleted: false,
-      };
-
-      fetch('/api/save-progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (currentDay < 5) {
-            currentDay++;
-            localStorage.setItem('fesmart_current_day_loop', currentDay);
-            window.location.reload();
-          } else {
-            localStorage.removeItem('fesmart_current_day_loop');
-            window.location.href = 'hari6.html';
-          }
-        })
-        .catch((err) => {
-          console.error('Error:', err);
-          // Fallback Offline
-          if (currentDay < 5) {
-            currentDay++;
-            localStorage.setItem('fesmart_current_day_loop', currentDay);
-            window.location.reload();
-          } else {
-            window.location.href = 'hari6.html';
-          }
-        });
-    };
+    document.querySelectorAll('input[name="jawaban"]').forEach((radio) => {
+      radio.addEventListener('change', () => playSound(soundClick));
+    });
   }
 
-  function checkWindowSize() {}
-  window.addEventListener('resize', checkWindowSize);
+  function showResults() {
+    // Update character image for hasil
+    const imgEl = document.getElementById('main-character-hasil-img');
+    if (imgEl) imgEl.src = getCharacterImage(userData.character || 'siti');
+
+    const score = userAnswers.reduce(
+      (sum, answer) => sum + (answer.selected === answer.correct ? 1 : 0),
+      0,
+    );
+    const correctCount = userAnswers.filter(
+      (answer) => answer.selected === answer.correct,
+    ).length;
+    const hasilMessage = document.getElementById('hasil-message');
+    if (!hasilMessage) return;
+
+    const historyHtml = userAnswers
+      .map((answer, idx) => {
+        const question = kuisData[idx];
+        const isCorrect = answer.selected === answer.correct;
+        const selectedText = question.opsi[answer.selected] || 'Tidak dijawab';
+        const correctText = question.opsi[answer.correct];
+        return `
+          <div class="history-item ${isCorrect ? 'correct' : 'wrong'}">
+            <div class="history-question">${question.soal}</div>
+            <div class="history-answer">Jawaban kamu: <strong>${String.fromCharCode(65 + answer.selected)}. ${selectedText}</strong> ${isCorrect ? '<span class="history-badge correct">+1</span>' : '<span class="history-badge wrong">0</span>'}</div>
+            ${isCorrect ? '' : `<div class="correct-answer">Jawaban benar: <strong>${String.fromCharCode(65 + answer.correct)}. ${correctText}</strong></div>`}
+          </div>`;
+      })
+      .join('');
+
+    hasilMessage.innerHTML = `
+      <div class="result-summary">
+        <p>Kamu menjawab benar <strong>${correctCount}</strong> dari <strong>${kuisData.length}</strong> soal.</p>
+        <p>Total skor posttest: <strong>${score}</strong></p>
+      </div>
+      <div class="history-list">${historyHtml}</div>
+    `;
+
+    if (sceneKuis) sceneKuis.style.display = 'none';
+    if (sceneHasil) sceneHasil.style.display = 'block';
+    saveProgress('Hari 3', score);
+    localStorage.setItem(
+      'fesmart_user_session',
+      JSON.stringify({
+        ...userData,
+        totalCompliance: score,
+        totalKnowledge: 0,
+        lastPlayedDay: 'Hari 3',
+      }),
+    );
+  }
+
+  if (btnStart) {
+    btnStart.addEventListener('click', startKuis);
+  }
+
+  if (btnCheck) {
+    btnCheck.addEventListener('click', function () {
+      const selected = document.querySelector('input[name="jawaban"]:checked');
+      if (!selected) {
+        alert('Pilih jawaban terlebih dahulu.');
+        return;
+      }
+      const answerIndex = parseInt(selected.value, 10);
+      userAnswers.push({
+        selected: answerIndex,
+        correct: kuisData[currentIndex].jawaban,
+      });
+      currentIndex += 1;
+      if (currentIndex >= kuisData.length) {
+        showResults();
+      } else {
+        loadQuestion(currentIndex);
+      }
+    });
+  }
+
+  if (btnNextDay) {
+    btnNextDay.addEventListener('click', function () {
+      window.location.href = 'hari7.html';
+    });
+  }
+
+  init();
 });

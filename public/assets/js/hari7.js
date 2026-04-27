@@ -736,4 +736,36 @@ document.addEventListener('DOMContentLoaded', function () {
         };
       });
   }
+
+  // --- INIT FUNCTION ---
+  function init() {
+    const openingTitle = document.querySelector('.opening-title');
+    const openingSubtitle = document.querySelector('.opening-subtitle');
+    const btnStart = document.getElementById('btn-start');
+    const containerOpening = document.querySelector('.container-opening');
+    const sceneOpening = document.querySelector('.scene-opening');
+
+    if (openingTitle) openingTitle.textContent = 'Hari - 5';
+    if (openingSubtitle) openingSubtitle.textContent = 'Mini Game Iron Match';
+    if (btnStart) btnStart.textContent = 'Mulai Puzzle Iron Match';
+
+    // Update character image
+    const imgEl = document.getElementById('main-character-img');
+    if (imgEl) imgEl.src = getCharacterImage(userData.character || 'siti');
+
+    setTimeout(() => {
+      if (containerOpening) {
+        containerOpening.style.transform = 'translateY(-100vh)';
+        containerOpening.style.transition = 'transform 1.2s ease';
+      }
+      setTimeout(() => {
+        if (sceneOpening) sceneOpening.style.opacity = '1';
+        showDialog();
+      }, 1200);
+    }, 1500);
+    playSound(bgMusic);
+  }
+
+  // Call init when DOM loaded
+  document.addEventListener('DOMContentLoaded', init);
 });

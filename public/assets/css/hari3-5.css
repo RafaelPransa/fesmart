@@ -3,6 +3,20 @@ body {
   background-size: cover;
 }
 
+/* Character Speaking Animation */
+.character.speaking {
+  animation: bounce 0.6s infinite alternate;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
 /* --- Pilih Menu Mini Game Styles --- */
 .scene-pilih-menu {
   position: fixed;
@@ -319,13 +333,6 @@ body {
   color: var(--danger) !important; /* Menggunakan variabel merah global */
 }
 
-@media (max-width: 950px) {
-  .character-game {
-    /* Sembunyikan atau pindahkan ke bawah jika layar terlalu sempit */
-    display: none;
-  }
-}
-
 /* === REVIEW SECTION STYLES === */
 .hari-review {
   margin-top: 30px;
@@ -564,7 +571,57 @@ body {
   color: #8b1a1a;
 }
 
-/* Responsive Design */
+/* Hasil Styles */
+.history-item {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 5px solid;
+}
+
+.history-item.correct {
+  background: #f0fff4;
+  border-left-color: #4cd964;
+}
+
+.history-item.wrong {
+  background: #ffebee;
+  border-left-color: #ff3b30;
+}
+
+.history-question {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.history-answer {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.history-badge {
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+}
+
+.history-badge.correct {
+  background: #4cd964;
+  color: white;
+}
+
+.history-badge.wrong {
+  background: #ff3b30;
+  color: white;
+}
+
+.correct-answer {
+  color: #4cd964;
+  font-weight: 600;
+  margin-top: 5px;
+}
 @media (max-width: 768px) {
   .hari-review {
     padding: 15px;
@@ -624,7 +681,21 @@ body {
     width: 100%;
     box-sizing: border-box;
   }
-}
+
+  /* Character Responsive */
+  .character {
+    width: 250px;
+    height: auto;
+  }
+
+  .character img {
+    width: 100%;
+    height: auto;
+  }
+
+  .character-game {
+    width: 250px;
+  }
 
 @media (max-width: 576px) {
   .hari-review h3 {
@@ -686,5 +757,14 @@ body {
 
   .pilih-menu-header h2 {
     font-size: 1.5em;
+  }
+
+  /* Character Responsive */
+  .character {
+    width: 200px;
+  }
+
+  .character-game {
+    width: 200px;
   }
 }

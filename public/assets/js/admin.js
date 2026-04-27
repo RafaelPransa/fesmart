@@ -21,12 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 4. Setup Event Listener untuk Filter (Sorting)
-  const knowFilter = document.getElementById('filter-knowledge');
-  const compFilter = document.getElementById('filter-compliance');
+  const scoreFilter = document.getElementById('filter-score');
   const hbFilter = document.getElementById('filter-hb');
 
-  if (knowFilter) knowFilter.addEventListener('change', applyFilters);
-  if (compFilter) compFilter.addEventListener('change', applyFilters);
+  if (scoreFilter) scoreFilter.addEventListener('change', applyFilters);
   if (hbFilter) hbFilter.addEventListener('change', applyFilters);
 
   // 5. Setup Logout
@@ -89,20 +87,19 @@ window.exportData = function () {
     'Nama Pemain',
     'Karakter',
     'Progres Terakhir',
-    'Total Pengetahuan',
-    'Total Kepatuhan',
+    'Total Skor',
     'HB Akhir (g/dL)',
     'Status',
   ];
 
   // 2. Map data dari allPlayersData ke format baris CSV
   const csvRows = allPlayersData.map((user) => {
+    const totalScore = user.totalCompliance || 0;
     return [
       `"${user.username || 'Anonymous'}"`,
       'Petualang',
       `"${user.lastPlayedDay || 'Hari 1'}"`,
-      user.totalKnowledge || 0,
-      user.totalCompliance || 0,
+      totalScore,
       parseFloat(user.finalHb || 0).toFixed(1),
       user.is_completed ? 'Selesai' : 'Proses',
     ].join(',');
@@ -134,6 +131,7 @@ function renderTable(players) {
 
   players.forEach((user) => {
     const row = document.createElement('tr');
+    const totalScore = user.totalCompliance || 0;
 
     const statusBadge = user.is_completed
       ? '<span class="status-badge status-completed">Selesai</span>'
@@ -153,11 +151,10 @@ function renderTable(players) {
             </td>
             <td>Petualang</td>
             <td>${user.lastPlayedDay || 'Hari 1'}</td>
-            <td>${user.totalKnowledge || 0}</td>
-            <td>${user.totalCompliance || 0}</td>
+            <td>${totalScore}</td>
             <td><span class="hb-badge ${hbClass}">${finalHb.toFixed(
-      1
-    )} g/dL</span></td>
+              1,
+            )} g/dL</span></td>
             <td>${statusBadge}</td>
             <td>
                 <div class="action-buttons">
@@ -181,44 +178,31 @@ function renderTable(players) {
 // --- LOGIKA FILTER & SORTING ---
 function applyFilters() {
   let filteredData = [...allPlayersData];
-  const kVal = document.getElementById('filter-knowledge').value;
-  const cVal = document.getElementById('filter-compliance').value;
+  const sVal = document.getElementById('filter-score').value;
   const hVal = document.getElementById('filter-hb')
     ? document.getElementById('filter-hb').value
     : 'none';
 
   // Reset dropdown lain agar tidak tumpang tindih
-  if (this.id === 'filter-knowledge') {
-    document.getElementById('filter-compliance').value = 'none';
-    if (document.getElementById('filter-hb'))
-      document.getElementById('filter-hb').value = 'none';
-  } else if (this.id === 'filter-compliance') {
-    document.getElementById('filter-knowledge').value = 'none';
+  if (this.id === 'filter-score') {
     if (document.getElementById('filter-hb'))
       document.getElementById('filter-hb').value = 'none';
   } else if (this.id === 'filter-hb') {
-    document.getElementById('filter-knowledge').value = 'none';
-    document.getElementById('filter-compliance').value = 'none';
+    document.getElementById('filter-score').value = 'none';
   }
 
   // Eksekusi Sorting
-  if (kVal !== 'none') {
+  if (sVal !== 'none') {
     filteredData.sort((a, b) =>
-      kVal === 'high'
-        ? b.totalKnowledge - a.totalKnowledge
-        : a.totalKnowledge - b.totalKnowledge
-    );
-  } else if (cVal !== 'none') {
-    filteredData.sort((a, b) =>
-      cVal === 'high'
-        ? b.totalCompliance - a.totalCompliance
-        : a.totalCompliance - b.totalCompliance
+      sVal === 'high'
+        ? (b.totalCompliance || 0) - (a.totalCompliance || 0)
+        : (a.totalCompliance || 0) - (b.totalCompliance || 0),
     );
   } else if (hVal !== 'none') {
     filteredData.sort((a, b) =>
       hVal === 'high'
         ? parseFloat(b.finalHb) - parseFloat(a.finalHb)
-        : parseFloat(a.finalHb) - parseFloat(b.finalHb)
+        : parseFloat(a.finalHb) - parseFloat(b.finalHb),
     );
   }
 
@@ -229,7 +213,7 @@ function applyFilters() {
 function filterSearch(query) {
   const filter = query.toLowerCase();
   const filtered = allPlayersData.filter((user) =>
-    user.username.toLowerCase().includes(filter)
+    user.username.toLowerCase().includes(filter),
   );
   renderTable(filtered);
 }
@@ -335,19 +319,19 @@ function updateStats(players) {
       totalHb += hb;
       hbCount++;
     }
-    totalKnow += p.totalKnowledge || 0;
+    totalKnow += p.totalCompliance || 0;
   });
 
   const avgHb = hbCount > 0 ? (totalHb / hbCount).toFixed(1) : 0;
-  const avgKnow = totalPlayers > 0 ? Math.round(totalKnow / totalPlayers) : 0;
+  const avgScore = totalPlayers > 0 ? Math.round(totalKnow / totalPlayers) : 0;
 
   const elTotal = document.getElementById('total-players');
   const elComplete = document.getElementById('completed-players');
   const elHb = document.getElementById('avg-hb');
-  const elKnow = document.getElementById('avg-knowledge');
+  const elScore = document.getElementById('avg-score');
 
   if (elTotal) elTotal.textContent = totalPlayers;
   if (elComplete) elComplete.textContent = completedCount;
   if (elHb) elHb.textContent = `${avgHb} g/dL`;
-  if (elKnow) elKnow.textContent = `${avgKnow} Poin`;
+  if (elScore) elScore.textContent = `${avgScore} Poin`;
 }

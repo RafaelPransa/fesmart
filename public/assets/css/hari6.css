@@ -6,6 +6,20 @@ body {
   background-size: cover;
 }
 
+/* Character Speaking Animation */
+.character.speaking {
+  animation: bounce 0.6s infinite alternate;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
 /* Character Animations untuk Hari 6 */
 #character-main {
   transform: translateX(-400px);
@@ -269,11 +283,27 @@ body {
   #character-guru-simulasi {
     display: none;
   }
+
+  /* Character Responsive */
+  .character {
+    width: 250px;
+    height: auto;
+  }
+
+  .character img {
+    width: 100%;
+    height: auto;
+  }
 }
 
 @media (max-width: 576px) {
   .simulasi-header h2 {
     font-size: 1.5em;
     margin-bottom: 30px;
+  }
+
+  /* Character Responsive */
+  .character {
+    width: 200px;
   }
 }
