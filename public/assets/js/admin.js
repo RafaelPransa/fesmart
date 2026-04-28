@@ -4,10 +4,10 @@ let playerToDeleteId = null;
 
 document.addEventListener('DOMContentLoaded', function () {
   // 1. Cek Sesi Login Admin
-  // if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
-  //   window.location.href = 'admin-login.html';
-  //   return;
-  // }
+  if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+    window.location.href = 'admin-login.html';
+    return;
+  }
 
   // 2. Load Data Awal dari Server
   loadDashboardData();
