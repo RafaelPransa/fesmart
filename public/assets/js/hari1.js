@@ -165,25 +165,34 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!teksOpening) return;
     teksOpening.innerHTML = '';
     let lineIndex = 0;
-    let charIndex = 0;
 
-    function nextChar() {
-      const currentLine = lines[lineIndex];
-      if (charIndex < currentLine.length) {
-        teksOpening.innerHTML += currentLine.charAt(charIndex);
-        charIndex += 1;
-        if (charIndex % 3 === 0) playSound(soundCoolClick);
-        setTimeout(nextChar, speed);
-      } else {
-        lineIndex += 1;
-        charIndex = 0;
-        if (lineIndex < lines.length) {
-          teksOpening.innerHTML += '<br><br>';
-          setTimeout(nextChar, delay);
+    function nextLine() {
+      if (lineIndex < lines.length) {
+        // Membuat elemen span atau div baru untuk setiap baris
+        const p = document.createElement('p');
+        p.style.marginBottom = '10px';
+        teksOpening.appendChild(p);
+
+        let charIndex = 0;
+        const currentLine = lines[lineIndex];
+
+        function nextChar() {
+          if (charIndex < currentLine.length) {
+            // Menggunakan innerHTML agar tag <i> diproses
+            // Kita ambil teks sampai charIndex saat ini
+            p.innerHTML = currentLine.slice(0, charIndex + 1);
+            charIndex++;
+            if (charIndex % 3 === 0) playSound(soundCoolClick);
+            setTimeout(nextChar, speed);
+          } else {
+            lineIndex++;
+            setTimeout(nextLine, delay);
+          }
         }
+        nextChar();
       }
     }
-    nextChar();
+    nextLine();
   }
 
   function init() {
@@ -207,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (guru) guru.classList.add('slide-guru', 'floating');
 
     const lines = [
-      `${userData.username || 'Petualang'}: "Aku ingin tahu lebih banyak tentang anemia dan tablet Fe."`,
-      'GURU UKS: "Ayo kita mulai dengan pretest ringan. Jawabanmu tidak akan dihitung ke poin resmi."',
+      `${userData.username || 'Petualang'}: Aku ingin tahu lebih banyak tentang anemia dan tablet Fe.`,
+      'Guru UKS: Ayo kita mulai dengan <i>pre-test</i> ringan. Jawaban kamu tidak akan dihitung ke dalam poin resmi.',
     ];
     typeWriter(lines);
     if (btnStart) btnStart.classList.remove('btn-hidden');
@@ -285,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (hasilMessage) {
       hasilMessage.innerHTML = `
         <p>Kamu menjawab benar <strong>${totalCorrect}</strong> dari <strong>${kuisData.length}</strong> soal.</p>
-        <p>Ini adalah pretest. Skor ini <strong>belum dihitung</strong> ke total poin akhir.</p>
+        <p>Ini adalah <i>pre-test</i>. Skor ini <strong>belum dihitung</strong> ke dalam total poin akhir.</p>
       `;
     }
     if (sceneKuis) sceneKuis.style.display = 'none';

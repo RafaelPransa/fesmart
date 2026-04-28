@@ -178,7 +178,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function nextChar() {
       const currentLine = lines[lineIndex];
       if (charIndex < currentLine.length) {
-        teksOpening.innerHTML += currentLine.charAt(charIndex);
+        // PERBAIKAN: Gunakan slice dan innerHTML agar tag <i> terdeteksi
+        teksOpening.innerHTML =
+          teksOpening.innerHTML
+            .split('<br><br>')
+            .slice(0, lineIndex)
+            .join('<br><br>') +
+          (lineIndex > 0 ? '<br><br>' : '') +
+          currentLine.slice(0, charIndex + 1);
+
         charIndex += 1;
         if (charIndex % 3 === 0) playSound(soundCoolClick);
         setTimeout(nextChar, speed);
@@ -186,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function () {
         lineIndex += 1;
         charIndex = 0;
         if (lineIndex < lines.length) {
-          teksOpening.innerHTML += '<br><br>';
           setTimeout(nextChar, delay);
         }
       }
@@ -213,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function init() {
     if (hariTitle) hariTitle.textContent = 'Hari - 3';
-    if (openingSubtitle) openingSubtitle.textContent = 'Posttest Anemia';
+    if (openingSubtitle) openingSubtitle.innerHTML = '<i>Post-test</i>';
     if (currentDayBtn) currentDayBtn.textContent = '3';
 
     // Update character image
@@ -241,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showDialog() {
     const lines = [
-      'GURU UKS: "Sekarang kita mulai posttest. Setiap jawaban benar mendapatkan 1 poin."',
+      'GURU UKS: "Sekarang kita mulai <i>post-test</i>. Setiap jawaban benar mendapatkan 1 poin."',
       `${userData.username || 'Petualang'}: "Siap, aku akan jawab dengan teliti."`,
     ];
     typeWriter(lines);

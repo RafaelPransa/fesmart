@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function typeWriter(lines, speed = 40, delay = 1000) {
+  function typeWriter(lines, speed = 40, delay = 3000) {
     let lineIndex = 0;
     let charIndex = 0;
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       otherBubble.style.display = 'none';
       bubble.style.display = 'block';
-      bubble.innerHTML = '';
+      bubble.innerHTML = ''; // Reset isi bubble
       animateCharacterSpeaking('character-main', isUserSpeaking);
       animateCharacterSpeaking('character-teman', !isUserSpeaking);
     }
@@ -129,7 +129,10 @@ document.addEventListener('DOMContentLoaded', function () {
           userData.username || 'Petualang',
         );
         const bubble = isUserSpeaking ? bubbleMain : bubbleTeman;
-        bubble.innerHTML += currentLine.charAt(charIndex);
+
+        // PERBAIKAN: Gunakan slice agar tag HTML terproses secara utuh oleh innerHTML
+        bubble.innerHTML = currentLine.slice(0, charIndex + 1);
+
         charIndex += 1;
         if (charIndex % 3 === 0) playSound(soundCoolClick);
         setTimeout(nextChar, speed);
@@ -141,8 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           animateCharacterSpeaking('character-main', false);
           animateCharacterSpeaking('character-teman', false);
-          bubbleMain.style.display = 'none';
-          bubbleTeman.style.display = 'none';
+          // Biarkan bubble terakhir tetap tampil sejenak atau sembunyikan sesuai keinginan
           if (btnStart) btnStart.classList.remove('btn-hidden');
         }
       }
@@ -156,63 +158,64 @@ document.addEventListener('DOMContentLoaded', function () {
     );
     const questions = [
       {
-        soal: 'Ehh kamu pernah dengar ga soal anemia? Aku sekarang lagi penasaran soalnya',
+        soal: 'Eh, kamu pernah dengar soal anemia nggak? Aku lagi penasaran banget nih.',
         correct: 'Kondisi kurangnya sel darah merah atau hemoglobin',
         explanation:
-          'Iya pernah. Setauku anemia yaitu ketika kita kekurangan sel darah merah atau hemoglobin.',
+          'Pernah dong! Setahuku, anemia itu kondisi saat kita kekurangan sel darah merah atau hemoglobin dalam tubuh.',
       },
       {
-        soal: 'Ohh kayak gitu ya, apa kamu tau ciri-ciri orang yang anemia?',
+        soal: 'Oh, begitu ya. Kalau ciri-ciri orang yang terkena anemia itu seperti apa sih?',
         correct: 'Mudah lelah',
         explanation:
-          'Biasanya sih orang yang anemia itu cepat banget ngerasa cape.',
+          'Biasanya orang yang anemia itu bakal cepat merasa lelah atau lemas meskipun nggak beraktivitas berat.',
       },
       {
-        soal: 'Selain itu ada lagi ga? Soalnya aku pernah liat di tiktok, katanya kulit pucat itu juga tanda anemia. Benar ga itu?',
+        soal: 'Selain itu ada lagi nggak? Soalnya aku pernah lihat di TikTok, katanya kulit pucat juga tanda anemia. Benar nggak sih?',
         correct: 'Anemia',
-        explanation: 'Iyap benar banget.',
+        explanation:
+          'Iya, benar banget! Kulit yang terlihat pucat juga salah satu indikator kalau seseorang terkena anemia.',
       },
       {
-        soal: 'Aku liat-liat juga di medsos katanya remaja perempuan seumuran kita yang sering mengalami anemia. Itu kenapa ya bisa begitu?',
+        soal: 'Aku lihat di medsos, katanya remaja perempuan seumuran kita yang paling sering mengalami anemia. Itu kenapa ya?',
         correct: 'Karena menstruasi',
         explanation:
-          'Karena kehilangan darah saat menstruasi yang mengurangi zat besi. Ada juga tablet yang bisa untuk mencegah anemia. Nama tabletnya yaitu tablet Fe',
+          'Karena kita kehilangan darah saat menstruasi, sehingga cadangan zat besi berkurang. Nah, makanya ada tablet Fe untuk mencegahnya.',
       },
       {
-        soal: 'Woww, hebat juga ya. Emang kandungan dari tablet Fe apaan?',
+        soal: 'Wah, hebat juga ya penjelasannya. Memangnya fungsi utama dari tablet Fe itu apa?',
         correct: 'Menambah cadangan zat besi',
         explanation:
-          'Tablet Fe mengandung zat besi. Nahh, jadi bisa untuk mencegah anemia.',
+          'Tablet Fe itu isinya zat besi. Fungsinya untuk menambah cadangan zat besi di tubuh kita supaya terhindar dari anemia.',
       },
       {
-        soal: 'Ohh oke. Terus kamu tau ga tanda gejala anemia selain mudah cape atau lelah gitu?',
+        soal: 'Oke, paham. Terus, kamu tahu nggak gejala anemia selain mudah lelah atau lemas?',
         correct: 'Pusing',
         explanation:
-          'Selain menyebabkan mudah lelah, gejala yang sering muncul adalah pusing',
+          'Selain gampang capek, gejala yang paling sering muncul itu biasanya pusing atau sakit kepala.',
       },
       {
-        soal: 'Ohh iya tadi kamu nyebutin zat besi. Sebenarnya zat besi itu untuk apa si?',
+        soal: 'Oh iya, tadi kamu sempat sebut soal zat besi. Sebenarnya zat besi itu fungsinya untuk apa sih?',
         correct: 'Sel darah merah',
         explanation:
-          'Zat besi dibutuhkan untuk membuat hemoglobin dalam darah. Zat besi dapat kita temui dalam makanan sehari-hari kita tau...',
+          'Zat besi itu bahan utama untuk membuat hemoglobin dalam darah. Kita bisa menemukan zat besi di makanan sehari-hari, lho.',
       },
       {
-        soal: 'Ohh emang iya? coba sebutin apa aja makanan yang mengandung zat besi dong.',
+        soal: 'Oh, ya? Coba sebutkan dong makanan apa saja yang banyak mengandung zat besi.',
         correct: 'Bayam',
         explanation:
-          'Banyakk kayak bayam, daging merah, dan kacang-kacangan kaya zat besi.',
+          'Banyak kok! Contohnya seperti bayam, daging merah, dan kacang-kacangan. Itu semua kaya akan zat besi.',
       },
       {
-        soal: 'Ohh iya aku ingin nanya lagi, tadi kamu bilang tablet Fe mengandung zat besi juga ya?',
+        soal: 'Tadi kamu bilang tablet Fe mengandung zat besi juga, kan?',
         correct: 'Mencegah anemia',
         explanation:
-          'Yapp!! Tablet Fe membantu mengobati anemia dengan menambah zat besi. Kamu bisa ke UKS kalo mau tabletnya.',
+          'Yap, tepat sekali! Tablet Fe membantu mencegah dan mengobati anemia. Kalau kamu butuh, bisa coba minta ke UKS.',
       },
       {
-        soal: 'Ohh jadi nanti tinggal di ambil apa gimana di UKS? terus apa nanti UKS akan ngasih tau cara mengkonsumsi tablet Fe?',
+        soal: 'Terus nanti di UKS tinggal ambil saja? Apa pihak UKS bakal kasih tahu juga cara minumnya?',
         correct: 'Membagikan tablet Fe dan edukasi',
         explanation:
-          'Iya tinggal ambil. Pasti dong kan itu sudah jadi tugas UKS buat edukasi tentang tablet Fe dan anemia juga.',
+          'Iya, tinggal ambil saja. Pasti dikasih tahu kok, karena sudah tugas UKS untuk membagikan tablet Fe sekaligus memberikan edukasi.',
       },
     ];
 
@@ -233,16 +236,16 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         lines.push(`${userData.username || 'Petualang'}: ${question.soal}`);
         lines.push(
-          `Teman ${userData.username || 'Petualang'}: '${question.correct}'. ${question.explanation}`,
+          `Teman ${userData.username || 'Petualang'}: ${question.explanation}`,
         );
       }
     });
 
     lines.push(
-      `${userData.username || 'Petualang'}: Aku benar ${correctCount} dari ${totalQuestions}. Lumayan!`,
+      `${userData.username || 'Petualang'}: Aku menjawab benar ${correctCount} dari ${totalQuestions}. Lumayan!`,
     );
     lines.push(
-      `Teman ${userData.username || 'Petualang'}: Keren! Mari lanjut pelajari tentang tablet Fe agar nilaimu sempurna di Posttest!`,
+      `Teman ${userData.username || 'Petualang'}: Keren! Mari lanjut mempelajari tentang tablet Fe agar nilaimu sempurna di <i>post-test</i>!`,
     );
 
     typeWriter(lines);
@@ -266,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (sceneHasil) sceneHasil.style.display = 'block';
     const hasilMessage = document.getElementById('hasil-message');
     if (hasilMessage) {
-      hasilMessage.innerHTML = `<p>Percakapan hari ini selesai!</p><p>Siapkan dirimu untuk <strong>Hari ke-3</strong>.</p>`;
+      hasilMessage.innerHTML = `<p>Percakapan hari ini selesai!</p><p>Siapkan diri kamu untuk <strong><i>post-test</i></strong> pada hari ke-3.</p>`;
     }
     saveProgress('Hari 2');
     localStorage.setItem(

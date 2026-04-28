@@ -126,15 +126,33 @@ document.addEventListener('DOMContentLoaded', function () {
     let lineIndex = 0;
     let charIndex = 0;
     teksOpening.innerHTML = '';
+
     function typeLine() {
       if (lineIndex < lines.length) {
-        if (charIndex === 0 && lineIndex > 0) teksOpening.innerHTML += '<br>';
-        if (charIndex < lines[lineIndex].length) {
-          const currentChar = lines[lineIndex].charAt(charIndex);
-          if (charIndex === 0) teksOpening.innerHTML += '<strong>';
-          teksOpening.innerHTML += currentChar;
-          if (currentChar === ':' && charIndex < 10)
-            teksOpening.innerHTML += '</strong>';
+        const currentLine = lines[lineIndex];
+
+        // Membuat elemen paragraf baru jika baris baru dimulai
+        if (charIndex === 0) {
+          const p = document.createElement('p');
+          p.id = `line-${lineIndex}`;
+          p.style.marginBottom = '10px';
+          teksOpening.appendChild(p);
+        }
+
+        const currentPara = document.getElementById(`line-${lineIndex}`);
+
+        if (charIndex < currentLine.length) {
+          // PERBAIKAN: Gunakan slice agar tag HTML terdeteksi secara utuh oleh browser
+          let displayedText = currentLine.slice(0, charIndex + 1);
+
+          // Logika untuk menebalkan Nama Pembicara secara dinamis
+          if (displayedText.includes(':')) {
+            const parts = displayedText.split(':');
+            currentPara.innerHTML = `<strong>${parts[0]}:</strong>${parts[1]}`;
+          } else {
+            currentPara.innerHTML = displayedText;
+          }
+
           charIndex++;
           setTimeout(typeLine, speed);
         } else {
@@ -170,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('character-main').classList.add('slide-main');
     document.getElementById('character-guru').classList.add('slide-guru');
     const dialogLines = [
-      'GURU UKS: "Selamat! Ini adalah tantangan terakhir FeSmart. Tujuanmu: pulihkan HB mu ke level optimal!"',
-      `${mainCharacter.name.toUpperCase()}: "Saya siap, Bu! Saya akan gunakan semua pengetahuan Fe + Vitamin C saya!"`,
+      'Guru UKS: Selamat! Ini adalah tantangan terakhir FeSmart. Tujuanmu adalah untuk memulihkan Hb-mu ke level optimal!',
+      `${mainCharacter.name}: Saya siap, Bu! Saya akan gunakan semua pengetahuan Fe + vitamin C saya!`,
     ];
     typeWriterMultiple(dialogLines, 40, 800);
     setTimeout(() => {
@@ -227,13 +245,13 @@ document.addEventListener('DOMContentLoaded', function () {
     sceneGame.innerHTML = `
       <div class="puzzle-container">
         <div class="puzzle-header">
-          <h2>🧩 Iron Match: Pulihkan HB!</h2>
+          <h2>🧩 <i>Iron Match</i>: Pulihkan Hb!</h2>
           <h3>Target: ${HB_TARGET.toFixed(1)} g/dL</h3>
         </div>
         
         <div class="puzzle-stats-container">
           <div class="stat-item">
-            <span class="stat-label">HB Level:</span>
+            <span class="stat-label">Kadar Hb:</span>
             <span class="stat-value hb-value" id="hb-level-display">${currentHbLevel.toFixed(
               1,
             )}</span>
@@ -376,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `${currentHbLevel.toFixed(1)} g/dL`;
     document.getElementById('moves-left-display').textContent = movesLeft;
     document.getElementById('score-display').textContent = score;
-    if (currentHbLevel >= HB_TARGET) endGame(true, 'Target HB Tercapai!');
+    if (currentHbLevel >= HB_TARGET) endGame(true, 'Target Hb Tercapai!');
     else if (movesLeft <= 0) endGame(false, 'Gerakan Habis!');
   }
 
@@ -674,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
       emotion,
     );
     document.getElementById('final-message').innerHTML = `<strong>${
-      win ? '🎉 Hebat! HB Optimal!' : '👍 HB mu Normal, tetap jaga nutrisi!'
+      win ? '🎉 Hebat! Hb Optimal!' : '👍 Hb-mu Normal, tetap jaga nutrisi!'
     }</strong>`;
 
     // Render Grafik Chart.js
@@ -693,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function () {
       options: {
         responsive: true,
         plugins: {
-          title: { display: true, text: `HB Akhir: ${finalHb} g/dL` },
+          title: { display: true, text: `Hb Akhir: ${finalHb} g/dL` },
         },
       },
     });
@@ -746,8 +764,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const sceneOpening = document.querySelector('.scene-opening');
 
     if (openingTitle) openingTitle.textContent = 'Hari - 5';
-    if (openingSubtitle) openingSubtitle.textContent = 'Mini Game Iron Match';
-    if (btnStart) btnStart.textContent = 'Mulai Puzzle Iron Match';
+    if (openingSubtitle)
+      openingSubtitle.innerHTML = '<i>Mini Game Iron Match</i>';
+    if (btnStart) btnStart.innerHTML = 'Mulai <i>Puzzle Iron Match</i>';
 
     // Update character image
     const imgEl = document.getElementById('main-character-img');

@@ -88,6 +88,14 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
+
+/* Pastikan tag i dan em tetap miring */
+i,
+em {
+  font-style: italic !important;
+}
+
+/* Atau jika Anda menggunakan font 'Inter', pastikan varian italic sudah di-load */
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -523,8 +531,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(135, 206, 235, 0.8)),
-    url(../backgrounds/class.jpg);
+  background:
+    linear-gradient(rgba(135, 206, 235, 0.8)), url(../backgrounds/class.jpg);
   background-size: cover;
   z-index: 1000;
   overflow-y: auto;
@@ -550,7 +558,9 @@ body {
   height: 400px;
   z-index: -1;
   opacity: 0;
-  animation: fadeIn 0.8s ease forwards, bounce 4s infinite;
+  animation:
+    fadeIn 0.8s ease forwards,
+    bounce 4s infinite;
 }
 
 .character-sarapan {

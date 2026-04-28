@@ -1,6 +1,11 @@
 /* Import general styles */
 @import url('general.css');
 
+i,
+em {
+  font-style: italic !important;
+}
+
 body {
   background: url(../backgrounds/school.jpg);
   background-size: cover;

@@ -124,7 +124,7 @@ function renderTimeline(user) {
   // Hari 1
   events.push({
     day: 'Hari 1',
-    desc: 'Memulai petualangan, belajar gejala anemia, dan melakukan Pre-Test.',
+    desc: 'Memulai petualangan, belajar gejala anemia, dan melakukan <i>Pre-Test</i>.',
     score: user.totalKnowledge > 0 ? 'Selesai' : '-',
     status: user.totalKnowledge > 0 ? 'good' : 'bad',
   });
