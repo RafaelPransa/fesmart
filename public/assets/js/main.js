@@ -317,7 +317,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Check username based on anonymous mode
     if (isAnonymous) {
       isFormValid = true;
-      showValidationMessage('Siap bermain sebagai anonymous!', 'success');
+      showValidationMessage(
+        'Siap bermain sebagai <i>anonymous!</i>',
+        'success',
+      );
     } else {
       if (username.length === 0) {
         isFormValid = false;
@@ -335,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function showValidationMessage(message, type) {
-    validationMessage.textContent = message;
+    validationMessage.innerHTML = message;
     validationMessage.className = 'validation-message';
 
     if (type === 'error') {
