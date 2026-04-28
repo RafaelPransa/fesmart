@@ -27,6 +27,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let isSoundOn = localStorage.getItem('fesmart_sound') !== 'off';
 
+  // Tambahkan ini agar HTML bisa mengenali fungsi toggleSound
+  window.toggleSound = function () {
+    isSoundOn = !isSoundOn;
+    localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
+
+    // Update ikon
+    const soundBtn = document.querySelector(
+      '.control-btn[onclick="toggleSound()"]',
+    );
+    if (soundBtn) {
+      soundBtn.innerHTML = isSoundOn ? '🔊 Suara' : '🔇 Suara';
+    }
+
+    if (isSoundOn) {
+      playBackgroundMusic();
+    } else {
+      if (bgMusic) bgMusic.pause();
+    }
+  };
+
+  window.playBackgroundMusic = function () {
+    if (isSoundOn && bgMusic && bgMusic.paused) {
+      // Coba putar musik, ini mungkin gagal karena batasan browser (autoplay)
+      bgMusic.volume = 0.5; // Atur volume agar tidak terlalu keras
+      bgMusic
+        .play()
+        .catch((e) => console.log('Background music auto-play blocked:', e));
+    }
+  };
+
   function getCharacterImage(characterId, emotion = 'normal') {
     const characterImages = {
       siti: {
@@ -207,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showOpeningDialog();
       }, 1200);
     }, 1500);
-    playSound(bgMusic);
+    window.playBackgroundMusic();
   }
 
   function showOpeningDialog() {
@@ -224,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function startKuis() {
+    playSound(bgMusic);
     playSound(soundGameClick);
     if (sceneOpening) sceneOpening.style.display = 'none';
     if (sceneKuis) sceneKuis.style.display = 'block';

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '.control-btn[onclick="toggleSound()"]',
     );
     if (soundBtn) {
-      soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
+      soundBtn.innerHTML = isSoundOn ? '🔊 Suara' : '🔇 Suara';
     }
 
     if (isSoundOn) {
@@ -231,12 +231,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (isCorrect) {
         lines.push(`${userData.username || 'Petualang'}: ${question.soal}`);
         lines.push(
-          `Teman ${userData.username || 'Petualang'}: ${question.explanation}`,
+          `Teman ${userData.username.toLowerCase() || 'petualang'}: ${question.explanation}`,
         );
       } else {
         lines.push(`${userData.username || 'Petualang'}: ${question.soal}`);
         lines.push(
-          `Teman ${userData.username || 'Petualang'}: ${question.explanation}`,
+          `Teman ${userData.username.toLowerCase() || 'petualang'}: ${question.explanation}`,
         );
       }
     });
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `${userData.username || 'Petualang'}: Aku menjawab benar ${correctCount} dari ${totalQuestions}. Lumayan!`,
     );
     lines.push(
-      `Teman ${userData.username || 'Petualang'}: Keren! Mari lanjut mempelajari tentang tablet Fe agar nilaimu sempurna di <i>post-test</i>!`,
+      `Teman ${userData.username.toLowerCase() || 'petualang'}: Keren! Mari lanjut mempelajari tentang tablet Fe agar nilaimu sempurna di <i>post-test</i>!`,
     );
 
     typeWriter(lines);
