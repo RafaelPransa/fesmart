@@ -32,6 +32,13 @@ document.addEventListener('DOMContentLoaded', function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
+    const soundBtn = document.querySelector(
+      '.control-btn[onclick="toggleSound()"]',
+    );
+    if (soundBtn) {
+      soundBtn.innerHTML = isSoundOn ? '🔊 Suara' : '🔇 Suara';
+    }
+
     // Opsional: Pause music jika dimatikan
     if (!isSoundOn && bgMusic) {
       bgMusic.pause();
@@ -40,6 +47,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
+  };
+
+  window.playBackgroundMusic = function () {
+    if (isSoundOn && bgMusic && bgMusic.paused) {
+      // Coba putar musik, ini mungkin gagal karena batasan browser (autoplay)
+      bgMusic.volume = 0.5; // Atur volume agar tidak terlalu keras
+      bgMusic
+        .play()
+        .catch((e) => console.log('Background music auto-play blocked:', e));
+    }
   };
 
   function getCharacterImage(characterId, emotion = 'normal') {
@@ -65,6 +82,12 @@ document.addEventListener('DOMContentLoaded', function () {
       characterImages[characterId]?.['normal'] ||
       'assets/images/characters/default.png'
     );
+  }
+
+  function playSound(audio) {
+    if (!isSoundOn || !audio) return;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   }
 
   const kuisData = [
@@ -158,17 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentIndex = 0;
   let userAnswers = [];
 
-  function playSound(audio) {
-    if (!isSoundOn || !audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
-
-  window.toggleSound = function () {
-    isSoundOn = !isSoundOn;
-    localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
-  };
-
   function typeWriter(lines, speed = 35, delay = 800) {
     if (!teksOpening) return;
     teksOpening.innerHTML = '';
@@ -243,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showDialog();
       }, 1200);
     }, 1500);
-    playSound(bgMusic);
+    if (bgMusic) playSound(bgMusic);
   }
 
   function showDialog() {
@@ -378,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnNextDay) {
     btnNextDay.addEventListener('click', function () {
-      window.location.href = 'hari7.html';
+      window.location.href = 'minigames.html';
     });
   }
 

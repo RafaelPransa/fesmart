@@ -90,9 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const soundBtn = document.querySelector(
       '.control-btn[onclick="toggleSound()"]',
     );
-    if (soundBtn) soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
+    if (soundBtn) soundBtn.innerHTML = isSoundOn ? '🔊 Suara' : '🔇 Suara';
     if (isSoundOn) playBackgroundMusic();
     else if (bgMusic) bgMusic.pause();
+    console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
   };
 
   function getCharacterImage(characterId, emotion = 'normal') {

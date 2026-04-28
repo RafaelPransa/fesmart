@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       if (bgMusic) bgMusic.pause();
     }
+
+    console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
   };
 
   window.playBackgroundMusic = function () {
@@ -80,6 +82,12 @@ document.addEventListener('DOMContentLoaded', function () {
       characterImages[characterId]?.['normal'] ||
       'assets/images/characters/default.png'
     );
+  }
+
+  function playSound(audio) {
+    if (!isSoundOn || !audio) return;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   }
 
   const kuisData = [
@@ -173,17 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentIndex = 0;
   let userAnswers = [];
 
-  function playSound(audio) {
-    if (!isSoundOn || !audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
-
-  window.toggleSound = function () {
-    isSoundOn = !isSoundOn;
-    localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
-  };
-
   function updateCharacterName() {
     const nameEl = document.getElementById('main-character-name');
     if (nameEl) nameEl.textContent = userData.username || 'Petualang';
@@ -237,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showOpeningDialog();
       }, 1200);
     }, 1500);
-    window.playBackgroundMusic();
+    if (bgMusic) playSound(bgMusic);
   }
 
   function showOpeningDialog() {
@@ -254,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function startKuis() {
-    playSound(bgMusic);
     playSound(soundGameClick);
     if (sceneOpening) sceneOpening.style.display = 'none';
     if (sceneKuis) sceneKuis.style.display = 'block';

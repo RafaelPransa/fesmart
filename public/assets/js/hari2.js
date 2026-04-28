@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
-    // Update ikon
+    // Opsional: Pause music jika dimatikan
     const soundBtn = document.querySelector(
       '.control-btn[onclick="toggleSound()"]',
     );
@@ -35,11 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
       soundBtn.innerHTML = isSoundOn ? '🔊 Suara' : '🔇 Suara';
     }
 
-    if (isSoundOn) {
-      playBackgroundMusic();
-    } else {
-      if (bgMusic) bgMusic.pause();
+    if (!isSoundOn && bgMusic) {
+      bgMusic.pause();
+    } else if (isSoundOn && bgMusic) {
+      bgMusic.play().catch(() => {});
     }
+
+    console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
   };
 
   window.playBackgroundMusic = function () {
