@@ -36,42 +36,50 @@ async function renderCharts() {
     }
 
     // 2. Siapkan Dataset
-    const knowledgeTrendData = processKnowledgeTrend(players);
+    const prePostData = processPrePostComparison(players);
     const hbDistData = processHbDistribution(players);
-    const complianceData = processCompliance(players);
+    const completionData = processCompletionStatus(players);
     const correlationData = processCorrelation(players);
 
     // 3. Render Grafik Chart.js
 
-    // A. Tren Pengetahuan (Line Chart)
-    const ctxTrend = document.getElementById('knowledgeTrendChart');
-    if (ctxTrend) {
-      new Chart(ctxTrend, {
-        type: 'line',
+    // A. Perbandingan Pre-test vs Post-test (Bar Chart)
+    const ctxPrePost = document.getElementById('prePostComparisonChart');
+    if (ctxPrePost) {
+      new Chart(ctxPrePost, {
+        type: 'bar',
         data: {
-          labels: [
-            'Hari 1 (Pre)',
-            'Hari 2',
-            'Hari 3-5',
-            'Hari 6',
-            'Hari 7 (Post)',
-          ],
+          labels: ['Skor Pengetahuan (Rata-rata)'],
           datasets: [
             {
-              label: 'Rata-rata Skor Pengetahuan',
-              data: knowledgeTrendData,
+              label: 'Pre-test',
+              data: [prePostData.avgPre],
+              backgroundColor: 'rgba(72, 128, 255, 0.7)',
               borderColor: '#4880FF',
-              backgroundColor: 'rgba(72, 128, 255, 0.1)',
-              borderWidth: 3,
-              tension: 0.4,
-              fill: true,
+              borderWidth: 1,
+            },
+            {
+              label: 'Post-test',
+              data: [prePostData.avgPost],
+              backgroundColor: 'rgba(0, 182, 155, 0.7)',
+              borderColor: '#00B69B',
+              borderWidth: 1,
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 15, // Asumsi max score sekitar 10-15
+              title: { display: true, text: 'Poin' },
+            },
+          },
+          plugins: {
+            legend: { position: 'top' },
+          },
         },
       });
     }
@@ -101,25 +109,28 @@ async function renderCharts() {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              title: { display: true, text: 'Jumlah Pemain' },
+            },
+          },
         },
       });
     }
 
-    // C. Tingkat Kepatuhan (Doughnut Chart)
-    const ctxComp = document.getElementById('complianceChart');
+    // C. Status Penyelesaian (Doughnut Chart)
+    const ctxComp = document.getElementById('completionChart');
     if (ctxComp) {
       new Chart(ctxComp, {
         type: 'doughnut',
         data: {
-          labels: [
-            'Patuh Tinggi (>15)',
-            'Cukup Patuh (8-15)',
-            'Kurang Patuh (<8)',
-          ],
+          labels: ['Selesai (Tamat)', 'Masih Berproses'],
           datasets: [
             {
-              data: complianceData,
-              backgroundColor: ['#00B69B', '#FF9F43', '#EA5455'],
+              data: completionData,
+              backgroundColor: ['#00B69B', '#FF9F43'],
               borderWidth: 0,
             },
           ],
@@ -127,6 +138,9 @@ async function renderCharts() {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' },
+          },
         },
       });
     }
@@ -141,7 +155,9 @@ async function renderCharts() {
             {
               label: 'Pemain',
               data: correlationData,
-              backgroundColor: '#9b59b6',
+              backgroundColor: 'rgba(155, 89, 182, 0.6)',
+              pointRadius: 6,
+              pointHoverRadius: 8,
             },
           ],
         },
@@ -150,12 +166,23 @@ async function renderCharts() {
           maintainAspectRatio: false,
           scales: {
             x: {
-              title: { display: true, text: 'Total Pengetahuan' },
+              title: { display: true, text: 'Skor Pre-test' },
               beginAtZero: true,
+              max: 20,
             },
             y: {
-              title: { display: true, text: 'Total Kepatuhan' },
+              title: { display: true, text: 'Skor Post-test' },
               beginAtZero: true,
+              max: 20,
+            },
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `Pre: ${context.parsed.x}, Post: ${context.parsed.y}`;
+                },
+              },
             },
           },
         },
@@ -175,18 +202,14 @@ async function getPlayersData() {
     const response = await fetch('/api/admin/players');
     if (response.ok) {
       const dbData = await response.json();
-      // Normalisasi data dari DB agar formatnya seragam
-      // DB mengembalikan field flat (totalKnowledge), dummy data mengembalikan nested
       const normalizedDbData = dbData.map((p) => ({
         ...p,
-        // Pastikan angka valid
         finalHb: parseFloat(p.finalHb || 0),
-        totalKnowledge: parseInt(p.totalKnowledge || 0),
-        totalCompliance: parseInt(p.totalCompliance || 0),
+        totalKnowledge: parseInt(p.totalKnowledge || 0), // Pre-test
+        totalCompliance: parseInt(p.totalCompliance || 0), // Post-test
+        isCompleted: p.is_completed === true || p.isCompleted === true,
       }));
       players = players.concat(normalizedDbData);
-    } else {
-      console.error('Gagal mengambil data API:', response.statusText);
     }
   } catch (err) {
     console.error('Koneksi API Error:', err);
@@ -196,15 +219,12 @@ async function getPlayersData() {
   const dummyData = localStorage.getItem('fesmart_dummy_data');
   if (dummyData) {
     const parsedDummy = JSON.parse(dummyData);
-    // Normalisasi dummy data agar strukturnya sama dengan API
     const normalizedDummy = parsedDummy.map((p) => ({
       username: p.username,
-      // Dummy data tersimpan dengan struktur nested progress, kita ratakan:
-      finalHb: parseFloat(
-        p.progress?.hari7?.hbLevel || p.progress?.hari6?.hbLevel || 12,
-      ),
+      finalHb: parseFloat(p.finalHb || 12),
       totalKnowledge: p.totalKnowledge || 0,
       totalCompliance: p.totalCompliance || 0,
+      isCompleted: p.isCompleted || false,
     }));
 
     players = players.concat(normalizedDummy);
@@ -215,34 +235,20 @@ async function getPlayersData() {
 
 // --- PENGOLAHAN DATA UTAMA ---
 
-function processKnowledgeTrend(players) {
-  // Simulasi tren berdasarkan skor akhir (karena DB tidak menyimpan history per hari)
-  let day1 = 0,
-    day2 = 0,
-    day3 = 0,
-    day6 = 0,
-    day7 = 0;
+function processPrePostComparison(players) {
+  let totalPre = 0;
+  let totalPost = 0;
+  let count = players.length || 1;
 
   players.forEach((p) => {
-    const total = p.totalKnowledge || 0;
-    // Estimasi distribusi poin per hari (bobot kasar)
-    day1 += total * 0.1;
-    day2 += total * 0.15;
-    day3 += total * 0.2;
-    day6 += total * 0.25;
-    day7 += total * 0.3;
+    totalPre += p.totalKnowledge || 0;
+    totalPost += p.totalCompliance || 0;
   });
 
-  const count = players.length || 1;
-  // Faktor pengali agar terlihat bagus di grafik
-  const factor = 1.2;
-  return [
-    (day1 / count).toFixed(1),
-    (day2 / count).toFixed(1),
-    (day3 / count).toFixed(1),
-    (day6 / count).toFixed(1),
-    (day7 / count).toFixed(1),
-  ];
+  return {
+    avgPre: (totalPre / count).toFixed(1),
+    avgPost: (totalPost / count).toFixed(1),
+  };
 }
 
 function processHbDistribution(players) {
@@ -253,29 +259,27 @@ function processHbDistribution(players) {
 
   players.forEach((p) => {
     const hb = p.finalHb || 0;
-    if (hb < 8) severe++;
-    else if (hb < 12) mild++;
-    else if (hb < 15) normal++;
-    else optimal++;
+    if (hb > 0) {
+      if (hb < 8) severe++;
+      else if (hb < 12) mild++;
+      else if (hb < 15) normal++;
+      else optimal++;
+    }
   });
 
   return [severe, mild, normal, optimal];
 }
 
-function processCompliance(players) {
-  let high = 0,
-    medium = 0,
-    low = 0;
+function processCompletionStatus(players) {
+  let completed = 0;
+  let inProgress = 0;
 
   players.forEach((p) => {
-    const score = p.totalCompliance || 0;
-    // Ambang batas kategori kepatuhan
-    if (score > 15) high++;
-    else if (score >= 8) medium++;
-    else low++;
+    if (p.isCompleted) completed++;
+    else inProgress++;
   });
 
-  return [high, medium, low];
+  return [completed, inProgress];
 }
 
 function processCorrelation(players) {
@@ -286,50 +290,46 @@ function processCorrelation(players) {
 }
 
 // --- FITUR SIMULASI DATA (LOCAL ONLY) ---
-// Fitur ini menghasilkan data palsu di browser untuk demo visualisasi
-// Tidak dikirim ke database untuk menjaga kebersihan data asli.
 
 function generateDummyData() {
   const dummyPlayers = [];
-  const characters = ['siti', 'sari'];
+  const characters = ['siti', 'sari', 'clara'];
 
   for (let i = 0; i < 50; i++) {
-    // Randomize HB (Normal distribution simulation)
-    let hb = 10 + Math.random() * 6; // Range 10 - 16
+    // Randomize HB
+    let hb = 9 + Math.random() * 7; // Range 9 - 16
 
-    // Logic: HB tinggi biasanya berkolerasi dengan pengetahuan & kepatuhan tinggi
-    let knowledge = Math.floor((hb / 16) * 25) + Math.floor(Math.random() * 5);
-    let compliance = Math.floor((hb / 16) * 20) + Math.floor(Math.random() * 5);
+    // Logic: Pre-test biasanya lebih rendah dari Post-test
+    let preTest = Math.floor(Math.random() * 6) + 5; // 5-10
+    let postTest = preTest + Math.floor(Math.random() * 6); // preTest + 0-5
+
+    // Bonus dari game
+    let bonus = Math.random() > 0.5 ? 5 : 2;
+    let finalKnowledge = preTest + bonus;
+
+    let completed = Math.random() > 0.3;
 
     dummyPlayers.push({
       username: `Siswa Simulasi ${i + 1}`,
-      character: characters[Math.floor(Math.random() * 2)],
-      totalKnowledge: knowledge,
-      totalCompliance: compliance,
-      initialHb: 12,
-      // Struktur nested ini akan dinormalisasi di getPlayersData()
-      progress: {
-        hari6: { hbLevel: hb.toFixed(1) },
-        hari7: { hbLevel: (hb + 0.5).toFixed(1), completed: true },
-      },
+      character: characters[Math.floor(Math.random() * 3)],
+      totalKnowledge: finalKnowledge,
+      totalCompliance: postTest,
+      finalHb: hb.toFixed(1),
+      isCompleted: completed,
     });
   }
 
   localStorage.setItem('fesmart_dummy_data', JSON.stringify(dummyPlayers));
-  location.reload(); // Refresh halaman untuk melihat grafik baru
+  location.reload();
 }
 
 function resetDummyData() {
   if (!localStorage.getItem('fesmart_dummy_data')) {
-    alert('Saat ini Anda sedang melihat Data Asli (tidak ada simulasi aktif).');
+    alert('Saat ini Anda sedang melihat Data Asli.');
     return;
   }
 
-  if (
-    confirm(
-      'Hapus data simulasi dan kembali ke tampilan data asli dari Database?',
-    )
-  ) {
+  if (confirm('Hapus data simulasi dan kembali ke tampilan data asli?')) {
     localStorage.removeItem('fesmart_dummy_data');
     location.reload();
   }
@@ -343,13 +343,11 @@ function checkSimulationStatus() {
   if (btnSimulate && btnReset) {
     if (isSimulationActive) {
       btnSimulate.style.display = 'none';
-      btnReset.style.display = 'flex'; // Tampilkan tombol reset saat mode simulasi
-
-      // Indikator Visual di Header
+      btnReset.style.display = 'flex';
       const pageTitle = document.querySelector('.page-title p');
       if (pageTitle) {
         pageTitle.innerHTML =
-          '<span style="color: #9b59b6; font-weight:bold;">⚠️ MODE SIMULASI AKTIF</span> (Data Database + Data Dummy)';
+          '<span style="color: #9b59b6; font-weight:bold;">⚠️ MODE SIMULASI AKTIF</span>';
       }
     } else {
       btnSimulate.style.display = 'flex';

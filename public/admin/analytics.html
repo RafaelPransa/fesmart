@@ -76,16 +76,20 @@
         <div class="analytics-grid">
           <div class="chart-card large">
             <div class="chart-header">
-              <h3>📈 Tren Peningkatan Pengetahuan (Rata-rata)</h3>
+              <h3>📊 Perbandingan Rata-rata Skor Pre-test vs Post-test</h3>
+              <p class="chart-subtitle">
+                Mengukur peningkatan pengetahuan pemain sebelum dan sesudah intervensi.
+              </p>
             </div>
             <div class="chart-body">
-              <canvas id="knowledgeTrendChart"></canvas>
+              <canvas id="prePostComparisonChart"></canvas>
             </div>
           </div>
 
           <div class="chart-card">
             <div class="chart-header">
               <h3>🩸 Distribusi Level HB Akhir</h3>
+              <p class="chart-subtitle">Status kesehatan darah pemain di akhir program.</p>
             </div>
             <div class="chart-body">
               <canvas id="hbDistributionChart"></canvas>
@@ -94,18 +98,19 @@
 
           <div class="chart-card">
             <div class="chart-header">
-              <h3>💊 Tingkat Kepatuhan Minum Fe</h3>
+              <h3>✅ Status Penyelesaian Game</h3>
+              <p class="chart-subtitle">Persentase pemain yang menyelesaikan seluruh hari.</p>
             </div>
             <div class="chart-body">
-              <canvas id="complianceChart"></canvas>
+              <canvas id="completionChart"></canvas>
             </div>
           </div>
 
           <div class="chart-card large">
             <div class="chart-header">
-              <h3>🔗 Hubungan Pengetahuan vs. Kepatuhan</h3>
+              <h3>🔗 Korelasi Skor Pre-test vs Post-test</h3>
               <p class="chart-subtitle">
-                Apakah pengetahuan tinggi menjamin kepatuhan tinggi?
+                Melihat sebaran peningkatan individu antara skor awal dan skor akhir.
               </p>
             </div>
             <div class="chart-body">
