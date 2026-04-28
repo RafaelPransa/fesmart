@@ -260,8 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showDialog() {
     const lines = [
-      'GURU UKS: "Sekarang kita mulai <i>post-test</i>. Setiap jawaban benar mendapatkan 1 poin."',
-      `${userData.username || 'Petualang'}: "Siap, aku akan jawab dengan teliti."`,
+      'Guru UKS: Sekarang kita mulai <i>post-test</i>. Setiap jawaban benar mendapatkan 1 poin.',
+      `${userData.username || 'Petualang'}: Siap, aku akan jawab dengan teliti.`,
     ];
     typeWriter(lines);
     if (btnStart) btnStart.classList.remove('btn-hidden');
