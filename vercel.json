@@ -20,5 +20,10 @@
       "src": "/(.*)",
       "dest": "/public/$1"
     }
+  ],
+
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }
