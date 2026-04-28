@@ -85,20 +85,23 @@ header p {
     font-weight: 700;
 }
 
-/* Card Khusus Hari ke-7 */
-.day-card.final {
-  background: #0f172a;
+/* Card Khusus Tamat/Mini Game */
+.day-card.special {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #f59e0b;
+}
+
+.day-card.special .day-number {
+  background: #f59e0b;
   color: white;
 }
 
-.day-card.final .day-number {
-  background: #334155;
-  color: #f8fafc;
+.day-card.special h3 {
+  color: #92400e;
 }
 
-.day-card.final h3,
-.day-card.final p {
-  color: white;
+.day-card.special p {
+  color: #b45309;
 }
 
 /* Tombol Kembali */

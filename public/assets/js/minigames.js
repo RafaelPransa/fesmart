@@ -677,15 +677,15 @@ document.addEventListener('DOMContentLoaded', function () {
       score: finalScore,
       hbLevel: finalHb,
     };
-    userData.totalKnowledge = totalKnowledgePoints;
+    // totalCompliance tetap yang lama (dari hari 3)
     userData.finalHb = finalHb;
     localStorage.setItem('fesmart_user', JSON.stringify(userData));
 
     // Update UI Dashboard
     document.getElementById('score-pengetahuan-akhir').textContent =
-      `${totalKnowledgePoints} Poin`;
+      `${totalKnowledgePoints} Poin`; // Bonus pengetahuan dari game
     document.getElementById('score-kepatuhan-akhir').textContent =
-      `${totalCompliance} Poin`;
+      `${totalCompliance} Poin`; // Skor post-test hari 3
 
     let emotion = win ? 'senang' : currentHbLevel >= 12 ? 'normal' : 'murung';
     document.getElementById('main-character-hasil-img').src = getCharacterImage(
@@ -700,7 +700,8 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('xyChart'), {
       type: 'bar',
       data: {
-        labels: ['Pengetahuan', 'Kepatuhan'],
+        // 1. Hapus tag <i> dari label, cukup teks biasa
+        labels: ['Pre-test', 'Post-test'],
         datasets: [
           {
             label: 'Poin Kumulatif',
@@ -714,9 +715,18 @@ document.addEventListener('DOMContentLoaded', function () {
         plugins: {
           title: { display: true, text: `Hb Akhir: ${finalHb} g/dL` },
         },
+        // 2. Tambahkan pengaturan Scales untuk memiringkan font label bawah (X Axis)
+        scales: {
+          x: {
+            ticks: {
+              font: {
+                style: 'italic', // Ini yang membuat teks Pre-test & Post-test miring
+              },
+            },
+          },
+        },
       },
     });
-
     // --- INTEGRASI BACKEND: SIMPAN FINAL ---
     const btnSelesai = document.getElementById('btn-selesai');
     btnSelesai.textContent = 'Menyimpan Data Akhir...';

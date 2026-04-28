@@ -71,7 +71,11 @@ function renderProfile(user) {
 
   // Status Badge
   const badge = document.getElementById('p-status-badge');
-  if (user.is_completed) {
+  const isTamat =
+    user.is_completed ||
+    (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
+
+  if (isTamat) {
     badge.textContent = 'Selesai (Tamat)';
     badge.className = 'status-badge status-completed';
   } else {
@@ -97,11 +101,12 @@ function renderProfile(user) {
   // Statistik Angka
   document.getElementById('score-total').textContent =
     user.totalCompliance || 0;
-  document.getElementById('last-day').textContent =
-    user.lastPlayedDay || 'Hari 1';
+
+  const lastDayDisplay = isTamat ? 'Tamat' : user.lastPlayedDay || 'Hari 1';
+  document.getElementById('last-day').textContent = lastDayDisplay;
 }
 
-// --- RENDER TIMELINE (VERSI LENGKAP 7 HARI) ---
+// --- RENDER TIMELINE  ---
 function renderTimeline(user) {
   const container = document.getElementById('timeline-container');
   if (!container) return;
@@ -111,34 +116,30 @@ function renderTimeline(user) {
   const lastPlayed = user.lastPlayedDay || 'Hari 1';
 
   // Logika penentuan angka hari saat ini
-  const dayParts = lastPlayed.split(' ');
   let currentDayNum = 1;
-  if (lastPlayed.includes('Tamat')) {
-    currentDayNum = 3;
-  } else if (dayParts.length > 1) {
-    currentDayNum = parseInt(dayParts[1]);
-  }
+  if (lastPlayed.includes('Hari 2')) currentDayNum = 2;
+  else if (lastPlayed.includes('Hari 3')) currentDayNum = 3;
+  else if (lastPlayed.includes('Tamat') || lastPlayed.includes('Hari 7'))
+    currentDayNum = 7;
 
-  // --- DEFINISI SEMUA HARI (1-7) ---
+  // --- DEFINISI MILESTONE ---
 
   // Hari 1
+  const isDay1Done = parseInt(user.totalKnowledge || 0) >= 10;
   events.push({
     day: 'Hari 1',
     desc: 'Memulai petualangan, belajar gejala anemia, dan melakukan <i>Pre-Test</i>.',
-    score: user.totalKnowledge > 0 ? 'Selesai' : '-',
-    status: user.totalKnowledge > 0 ? 'good' : 'bad',
+    score: isDay1Done ? 'Selesai' : 'Selesai',
+    status: isDay1Done ? 'good' : 'good',
   });
 
   // Hari 2
   if (currentDayNum >= 2) {
-    const isPatuh = user.totalCompliance >= 10;
     events.push({
       day: 'Hari 2',
-      desc: isPatuh
-        ? 'Patuh mengonsumsi Tablet Tambah Darah (TTD) tepat waktu.'
-        : 'Melewatkan jadwal konsumsi Tablet Tambah Darah (TTD).',
-      score: isPatuh ? 'Selesai' : '-',
-      status: isPatuh ? 'good' : 'bad',
+      desc: 'Mempelajari pencegahan anemia melalui percakapan interaktif.',
+      score: 'Selesai',
+      status: 'good',
     });
   }
 
@@ -146,51 +147,20 @@ function renderTimeline(user) {
   if (currentDayNum >= 3) {
     events.push({
       day: 'Hari 3',
-      desc: 'Tantangan memilah menu makanan kaya zat besi dan faktor penghambatnya.',
-      score: 'Selesai',
+      desc: 'Mengerjakan <i>post-test</i> untuk menguji pemahaman akhir.',
+      score:
+        user.totalCompliance > 0 ? `${user.totalCompliance} Poin` : 'Selesai',
       status: 'good',
     });
   }
 
-  // Hari 4
-  if (currentDayNum >= 4) {
-    events.push({
-      day: 'Hari 4',
-      desc: 'Simulasi manajemen energi tubuh dan pemilihan nutrisi saat beraktivitas.',
-      score: 'Selesai',
-      status: 'good',
-    });
-  }
-
-  // Hari 5
-  if (currentDayNum >= 5) {
-    events.push({
-      day: 'Hari 5',
-      desc: 'Mengerjakan kuis harian untuk menguji pemahaman pencegahan anemia.',
-      score: 'Selesai',
-      status: 'good',
-    });
-  }
-
-  // Hari 6
-  if (currentDayNum >= 6) {
-    events.push({
-      day: 'Hari 6',
-      desc: 'Melakukan evaluasi kesehatan virtual dan mengikuti anjuran Guru UKS.',
-      score: 'Selesai',
-      status: 'good',
-    });
-  }
-
-  // Hari 7 (Final)
-  if (user.is_completed || currentDayNum >= 7) {
+  // (Final Mini Game)
+  if (user.is_completed || lastPlayed.includes('Tamat')) {
     const hbValue = parseFloat(user.finalHb || 0);
     events.push({
       day: 'Mini Game',
-      desc: `Menyelesaikan game puzzle Iron Match. HB Akhir: <strong>${hbValue.toFixed(
-        1,
-      )} g/dL</strong>`,
-      score: 'Selesai',
+      desc: `Tamat! Menyelesaikan tantangan <i>Iron Match</i>.`,
+      score: hbValue > 0 ? `${hbValue.toFixed(1)} Hb` : 'Selesai',
       status: hbValue >= 12 ? 'good' : 'bad',
     });
   }

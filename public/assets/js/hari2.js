@@ -305,6 +305,12 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnStart) btnStart.addEventListener('click', startStory);
   if (btnRestart)
     btnRestart.addEventListener('click', () => {
+      // Pemicu selesai Hari 2: klik tombol lanjut ke hari 3
+      saveProgress('Hari 2');
+      localStorage.setItem(
+        'fesmart_user_session',
+        JSON.stringify({ ...userData, lastPlayedDay: 'Hari 2' }),
+      );
       window.location.href = 'hari3.html';
     });
 

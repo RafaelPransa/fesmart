@@ -296,13 +296,18 @@ document.addEventListener('DOMContentLoaded', function () {
         index === kuisData.length - 1 ? 'Selesai' : 'Selanjutnya ➡';
   }
 
-  function saveProgress(lastDay, totalScore = 0, isCompleted = false) {
+  function saveProgress(
+    lastDay,
+    totalKnowledge = 0,
+    totalScore = 0,
+    isCompleted = false,
+  ) {
     fetch('/api/save-progress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId: userData.id,
-        totalKnowledge: 0,
+        totalKnowledge: totalKnowledge,
         totalCompliance: totalScore,
         finalHb: userData.finalHb || 0,
         lastDay,
@@ -317,6 +322,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalCorrect = userAnswers.filter(
       (item) => item.selected === item.correct,
     ).length;
+
+    // Perubahan: Anggap selesai jika mengisi 10 soal
+    const isDay1Finished = userAnswers.length >= 10;
+    const totalKnowledgeValue = isDay1Finished ? 10 : 0;
+
     const hasilMessage = document.getElementById('hasil-message');
     if (hasilMessage) {
       hasilMessage.innerHTML = `
@@ -326,14 +336,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (sceneKuis) sceneKuis.style.display = 'none';
     if (sceneHasil) sceneHasil.style.display = 'block';
-    saveProgress('Hari 1', 0, false);
+
+    // Hari 1 tidak mendapatkan poin kepatuhan (totalCompliance = 0)
+    saveProgress('Hari 1', totalKnowledgeValue, 0, false);
+
     localStorage.setItem(
       'fesmart_user_session',
       JSON.stringify({
         ...userData,
         lastPlayedDay: 'Hari 1',
         totalCompliance: 0,
-        totalKnowledge: 0,
+        totalKnowledge: totalKnowledgeValue,
       }),
     );
     localStorage.setItem(

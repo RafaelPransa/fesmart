@@ -4,10 +4,10 @@ let playerToDeleteId = null;
 
 document.addEventListener('DOMContentLoaded', function () {
   // 1. Cek Sesi Login Admin
-  if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
-    window.location.href = 'admin-login.html';
-    return;
-  }
+  // if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+  //   window.location.href = 'admin-login.html';
+  //   return;
+  // }
 
   // 2. Load Data Awal dari Server
   loadDashboardData();
@@ -89,22 +89,25 @@ window.exportData = function () {
     'Nama Pemain',
     'Karakter',
     'Progres Terakhir',
-    'Total Pengetahuan',
-    'Total Kepatuhan',
+    'Pre-test',
+    'Post-test`',
     'HB Akhir (g/dL)',
     'Status',
   ];
 
   // 2. Map data dari allPlayersData ke format baris CSV
   const csvRows = allPlayersData.map((user) => {
+    const isTamat = user.is_completed || (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
+    const lastDayDisplay = isTamat ? 'Tamat' : (user.lastPlayedDay || 'Hari 1');
+    
     return [
       `"${user.username || 'Anonymous'}"`,
       'Petualang',
-      `"${user.lastPlayedDay || 'Hari 1'}"`,
+      `"${lastDayDisplay}"`,
       user.totalKnowledge || 0,
       user.totalCompliance || 0,
       parseFloat(user.finalHb || 0).toFixed(1),
-      user.is_completed ? 'Selesai' : 'Proses',
+      isTamat ? 'Selesai' : 'Proses',
     ].join(',');
   });
 
@@ -135,12 +138,15 @@ function renderTable(players) {
   players.forEach((user) => {
     const row = document.createElement('tr');
 
-    const statusBadge = user.is_completed
+    const isTamat = user.is_completed || (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
+
+    const statusBadge = isTamat
       ? '<span class="status-badge status-completed">Selesai</span>'
       : '<span class="status-badge status-progress">Proses</span>';
 
     const finalHb = parseFloat(user.finalHb || 0);
     const hbClass = finalHb >= 12 ? 'hb-good' : 'hb-low';
+    const lastDayDisplay = isTamat ? 'Tamat' : (user.lastPlayedDay || 'Hari 1');
 
     row.innerHTML = `
             <td>
@@ -152,12 +158,12 @@ function renderTable(players) {
                 }</div>
             </td>
             <td>Petualang</td>
-            <td>${user.lastPlayedDay || 'Hari 1'}</td>
-            <td>${user.totalKnowledge || 0}</td>
+            <td>${lastDayDisplay}</td>
             <td>${user.totalCompliance || 0}</td>
             <td><span class="hb-badge ${hbClass}">${finalHb.toFixed(
-      1
-    )} g/dL</span></td>
+              1,
+            )} g/dL</span></td>
+            
             <td>${statusBadge}</td>
             <td>
                 <div class="action-buttons">
@@ -206,19 +212,19 @@ function applyFilters() {
     filteredData.sort((a, b) =>
       kVal === 'high'
         ? b.totalKnowledge - a.totalKnowledge
-        : a.totalKnowledge - b.totalKnowledge
+        : a.totalKnowledge - b.totalKnowledge,
     );
   } else if (cVal !== 'none') {
     filteredData.sort((a, b) =>
       cVal === 'high'
         ? b.totalCompliance - a.totalCompliance
-        : a.totalCompliance - b.totalCompliance
+        : a.totalCompliance - b.totalCompliance,
     );
   } else if (hVal !== 'none') {
     filteredData.sort((a, b) =>
       hVal === 'high'
         ? parseFloat(b.finalHb) - parseFloat(a.finalHb)
-        : parseFloat(a.finalHb) - parseFloat(b.finalHb)
+        : parseFloat(a.finalHb) - parseFloat(b.finalHb),
     );
   }
 
@@ -229,7 +235,7 @@ function applyFilters() {
 function filterSearch(query) {
   const filter = query.toLowerCase();
   const filtered = allPlayersData.filter((user) =>
-    user.username.toLowerCase().includes(filter)
+    user.username.toLowerCase().includes(filter),
   );
   renderTable(filtered);
 }
@@ -335,7 +341,7 @@ function updateStats(players) {
       totalHb += hb;
       hbCount++;
     }
-    totalKnow += p.totalKnowledge || 0;
+    totalKnow += p.totalCompliance || 0;
   });
 
   const avgHb = hbCount > 0 ? (totalHb / hbCount).toFixed(1) : 0;
@@ -344,10 +350,10 @@ function updateStats(players) {
   const elTotal = document.getElementById('total-players');
   const elComplete = document.getElementById('completed-players');
   const elHb = document.getElementById('avg-hb');
-  const elKnow = document.getElementById('avg-knowledge');
+  const elScore = document.getElementById('avg-score');
 
   if (elTotal) elTotal.textContent = totalPlayers;
   if (elComplete) elComplete.textContent = completedCount;
   if (elHb) elHb.textContent = `${avgHb} g/dL`;
-  if (elKnow) elKnow.textContent = `${avgKnow} Poin`;
+  if (elScore) elScore.textContent = `${avgKnow} Poin`;
 }
