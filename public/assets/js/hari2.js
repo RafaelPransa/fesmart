@@ -27,14 +27,29 @@ document.addEventListener('DOMContentLoaded', function () {
     isSoundOn = !isSoundOn;
     localStorage.setItem('fesmart_sound', isSoundOn ? 'on' : 'off');
 
-    // Opsional: Pause music jika dimatikan
-    if (!isSoundOn && bgMusic) {
-      bgMusic.pause();
-    } else if (isSoundOn && bgMusic) {
-      bgMusic.play().catch(() => {});
+    // Update ikon
+    const soundBtn = document.querySelector(
+      '.control-btn[onclick="toggleSound()"]',
+    );
+    if (soundBtn) {
+      soundBtn.innerHTML = isSoundOn ? '🔊 Sound' : '🔇 Sound';
     }
 
-    console.log('Sound is now: ' + (isSoundOn ? 'ON' : 'OFF'));
+    if (isSoundOn) {
+      playBackgroundMusic();
+    } else {
+      if (bgMusic) bgMusic.pause();
+    }
+  };
+
+  window.playBackgroundMusic = function () {
+    if (isSoundOn && bgMusic && bgMusic.paused) {
+      // Coba putar musik, ini mungkin gagal karena batasan browser (autoplay)
+      bgMusic.volume = 0.5; // Atur volume agar tidak terlalu keras
+      bgMusic
+        .play()
+        .catch((e) => console.log('Background music auto-play blocked:', e));
+    }
   };
 
   // --- FUNGSI YANG TADI HILANG ---
@@ -211,19 +226,23 @@ document.addEventListener('DOMContentLoaded', function () {
       const question = questions[index];
       const isCorrect = answer.selected === answer.correct;
       if (isCorrect) {
-        lines.push(`${userData.username || 'Petualang'}: " ${question.soal}"`);
-        lines.push(`TEMAN: "${question.explanation}"`);
+        lines.push(`${userData.username || 'Petualang'}: ${question.soal}`);
+        lines.push(
+          `Teman ${userData.username || 'Petualang'}: ${question.explanation}`,
+        );
       } else {
-        lines.push(`${userData.username || 'Petualang'}: "${question.soal}"`);
-        lines.push(`TEMAN: "'${question.correct}'. ${question.explanation}"`);
+        lines.push(`${userData.username || 'Petualang'}: ${question.soal}`);
+        lines.push(
+          `Teman ${userData.username || 'Petualang'}: '${question.correct}'. ${question.explanation}`,
+        );
       }
     });
 
     lines.push(
-      `${userData.username || 'Petualang'}: "Aku benar ${correctCount} dari ${totalQuestions}. Lumayan!"`,
+      `${userData.username || 'Petualang'}: Aku benar ${correctCount} dari ${totalQuestions}. Lumayan!`,
     );
     lines.push(
-      `TEMAN: "Keren! Mari lanjut pelajari tentang tablet Fe agar nilaimu sempurna di Posttest!"`,
+      `Teman ${userData.username || 'Petualang'}: Keren! Mari lanjut pelajari tentang tablet Fe agar nilaimu sempurna di Posttest!`,
     );
 
     typeWriter(lines);

@@ -532,6 +532,14 @@ body {
   .container-teks-opening {
     text-align: center;
   }
+
+  #character-main.slide-main {
+    transform: translateX(-65%) translateY(185px) !important;
+  }
+
+  #character-teman.slide-teman {
+    transform: translateX(65%) translateY(-40%) !important;
+  }
 }
 
 @media (max-width: 576px) {

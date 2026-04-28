@@ -186,9 +186,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Username Input validation
-  usernameInput.addEventListener('input', function () {
+  usernameInput.addEventListener('input', function (e) {
     playCoolClickSound();
     validateForm();
+
+    let value = e.target.value;
+
+    if (value.length > 0) {
+      // Huruf ke-1 paksa Kapital + Sisa karakter (termasuk setelah spasi) paksa Kecil
+      e.target.value =
+        value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    }
 
     // Real-time validation feedback
     if (!isAnonymous) {

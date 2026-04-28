@@ -114,7 +114,7 @@ function renderTimeline(user) {
   const dayParts = lastPlayed.split(' ');
   let currentDayNum = 1;
   if (lastPlayed.includes('Tamat')) {
-    currentDayNum = 7;
+    currentDayNum = 3;
   } else if (dayParts.length > 1) {
     currentDayNum = parseInt(dayParts[1]);
   }
@@ -186,7 +186,7 @@ function renderTimeline(user) {
   if (user.is_completed || currentDayNum >= 7) {
     const hbValue = parseFloat(user.finalHb || 0);
     events.push({
-      day: 'Hari 7 (Final)',
+      day: 'Mini Game',
       desc: `Menyelesaikan game puzzle Iron Match. HB Akhir: <strong>${hbValue.toFixed(
         1,
       )} g/dL</strong>`,

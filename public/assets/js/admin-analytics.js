@@ -201,7 +201,7 @@ async function getPlayersData() {
       username: p.username,
       // Dummy data tersimpan dengan struktur nested progress, kita ratakan:
       finalHb: parseFloat(
-        p.progress?.hari7?.hbLevel || p.progress?.hari6?.hbLevel || 12
+        p.progress?.hari7?.hbLevel || p.progress?.hari6?.hbLevel || 12,
       ),
       totalKnowledge: p.totalKnowledge || 0,
       totalCompliance: p.totalCompliance || 0,
@@ -327,7 +327,7 @@ function resetDummyData() {
 
   if (
     confirm(
-      'Hapus data simulasi dan kembali ke tampilan data asli dari Database?'
+      'Hapus data simulasi dan kembali ke tampilan data asli dari Database?',
     )
   ) {
     localStorage.removeItem('fesmart_dummy_data');
