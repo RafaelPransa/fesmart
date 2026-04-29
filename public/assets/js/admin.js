@@ -4,10 +4,10 @@ let playerToDeleteId = null;
 
 document.addEventListener('DOMContentLoaded', function () {
   // 1. Cek Sesi Login Admin
-  if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
-    window.location.href = 'admin-login.html';
-    return;
-  }
+  // if (!sessionStorage.getItem('fesmart_admin_logged_in')) {
+  //   window.location.href = 'admin-login.html';
+  //   return;
+  // }
 
   // 2. Load Data Awal dari Server
   loadDashboardData();
@@ -97,9 +97,15 @@ window.exportData = function () {
 
   // 2. Map data dari allPlayersData ke format baris CSV
   const csvRows = allPlayersData.map((user) => {
-    const isTamat = user.is_completed || (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
-    const lastDayDisplay = isTamat ? 'Tamat' : (user.lastPlayedDay || 'Hari 1');
+    const isTamat =
+      user.is_completed ||
+      (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
     
+    let lastDayDisplay = isTamat ? 'Tamat' : user.lastPlayedDay || 'Pre-test';
+    if (lastDayDisplay.includes('Hari 1')) lastDayDisplay = 'Pre-test';
+    else if (lastDayDisplay.includes('Hari 2')) lastDayDisplay = 'Percakapan';
+    else if (lastDayDisplay.includes('Hari 3')) lastDayDisplay = 'Post-test';
+
     return [
       `"${user.username || 'Anonymous'}"`,
       'Petualang',
@@ -138,7 +144,9 @@ function renderTable(players) {
   players.forEach((user) => {
     const row = document.createElement('tr');
 
-    const isTamat = user.is_completed || (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
+    const isTamat =
+      user.is_completed ||
+      (user.lastPlayedDay && user.lastPlayedDay.includes('Tamat'));
 
     const statusBadge = isTamat
       ? '<span class="status-badge status-completed">Selesai</span>'
@@ -146,7 +154,12 @@ function renderTable(players) {
 
     const finalHb = parseFloat(user.finalHb || 0);
     const hbClass = finalHb >= 12 ? 'hb-good' : 'hb-low';
-    const lastDayDisplay = isTamat ? 'Tamat' : (user.lastPlayedDay || 'Hari 1');
+    
+    let lastDayDisplay = isTamat ? 'Tamat' : user.lastPlayedDay || 'Pre-test';
+    if (lastDayDisplay.includes('Hari 1')) lastDayDisplay = '<i>Pre-test</i>';
+    else if (lastDayDisplay.includes('Hari 2')) lastDayDisplay = 'Percakapan';
+    else if (lastDayDisplay.includes('Hari 3')) lastDayDisplay = '<i>Post-test</i>';
+    else if (lastDayDisplay === 'Pre-test') lastDayDisplay = '<i>Pre-test</i>';
 
     row.innerHTML = `
             <td>

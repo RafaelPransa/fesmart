@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (sceneHasil) sceneHasil.style.display = 'block';
     const hasilMessage = document.getElementById('hasil-message');
     if (hasilMessage) {
-      hasilMessage.innerHTML = `<p>Percakapan hari ini selesai!</p><p>Siapkan diri kamu untuk <strong><i>post-test</i></strong> pada hari ke-3.</p>`;
+      hasilMessage.innerHTML = `<p>Percakapan hari ini selesai!</p><p>Siapkan diri kamu untuk <strong><i>post-test</i>.</strong>`;
     }
     saveProgress('Hari 2');
     localStorage.setItem(

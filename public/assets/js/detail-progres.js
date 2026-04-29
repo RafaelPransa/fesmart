@@ -79,7 +79,12 @@ function renderProfile(user) {
     badge.textContent = 'Selesai (Tamat)';
     badge.className = 'status-badge status-completed';
   } else {
-    badge.textContent = `Proses (${user.lastPlayedDay || 'Hari 1'})`;
+    let lastDayDisplay = user.lastPlayedDay || 'Hari 1';
+    if (lastDayDisplay.includes('Hari 1')) lastDayDisplay = '<i>Pre-test</i>';
+    else if (lastDayDisplay.includes('Hari 2')) lastDayDisplay = 'Percakapan';
+    else if (lastDayDisplay.includes('Hari 3')) lastDayDisplay = '<i>Post-test</i>';
+    
+    badge.innerHTML = `Proses (${lastDayDisplay})`;
     badge.className = 'status-badge status-progress';
   }
 
@@ -102,8 +107,12 @@ function renderProfile(user) {
   document.getElementById('score-total').textContent =
     user.totalCompliance || 0;
 
-  const lastDayDisplay = isTamat ? 'Tamat' : user.lastPlayedDay || 'Hari 1';
-  document.getElementById('last-day').textContent = lastDayDisplay;
+  let lastDayDisplay = isTamat ? 'Tamat' : user.lastPlayedDay || 'Hari 1';
+  if (lastDayDisplay.includes('Hari 1')) lastDayDisplay = '<i>Pre-test</i>';
+  else if (lastDayDisplay.includes('Hari 2')) lastDayDisplay = 'Percakapan';
+  else if (lastDayDisplay.includes('Hari 3')) lastDayDisplay = '<i>Post-test</i>';
+  
+  document.getElementById('last-day').innerHTML = lastDayDisplay;
 }
 
 // --- RENDER TIMELINE  ---
@@ -127,7 +136,7 @@ function renderTimeline(user) {
   // Hari 1
   const isDay1Done = parseInt(user.totalKnowledge || 0) >= 10;
   events.push({
-    day: 'Hari 1',
+    day: '<i>Pre-test</i>',
     desc: 'Memulai petualangan, belajar gejala anemia, dan melakukan <i>Pre-Test</i>.',
     score: isDay1Done ? 'Selesai' : 'Selesai',
     status: isDay1Done ? 'good' : 'good',
@@ -136,7 +145,7 @@ function renderTimeline(user) {
   // Hari 2
   if (currentDayNum >= 2) {
     events.push({
-      day: 'Hari 2',
+      day: 'Percakapan',
       desc: 'Mempelajari pencegahan anemia melalui percakapan interaktif.',
       score: 'Selesai',
       status: 'good',
@@ -146,7 +155,7 @@ function renderTimeline(user) {
   // Hari 3
   if (currentDayNum >= 3) {
     events.push({
-      day: 'Hari 3',
+      day: '<i>Post-test</i>',
       desc: 'Mengerjakan <i>post-test</i> untuk menguji pemahaman akhir.',
       score:
         user.totalCompliance > 0 ? `${user.totalCompliance} Poin` : 'Selesai',
@@ -194,7 +203,7 @@ function renderAnalysis(user) {
   } else if (hb >= 10) {
     hbEl.innerHTML = `<span style="color:#ff9f43">⚠️ Ringan.</span> Sedikit di bawah normal. Perlu perhatian pada asupan Fe.`;
   } else {
-    hbEl.innerHTML = `<span style="color:#ea5455">🚨 Anemia.</span> HB rendah. Sangat disarankan konsultasi ke UKS/Puskesmas.`;
+    hbEl.innerHTML = `<span style="color:#ea5455">🚨 Anemia.</span> Hb rendah. Sangat disarankan konsultasi ke UKS/Puskesmas.`;
   }
 
   // 2. Analisis Kebiasaan

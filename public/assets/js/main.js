@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (loadingContainer) loadingContainer.classList.add('show');
 
     const username = isAnonymous
-      ? 'Petualang FeSmart'
+      ? `Petualang_${Math.floor(1000 + Math.random() * 9000)}`
       : usernameInput.value.trim();
 
     const localUserData = {
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 5. Redirect ke Hari 1
         setTimeout(() => {
-          window.location.href = 'hari1.html';
+          window.location.href = 'pre-test.html';
         }, 1000);
       } else {
         throw new Error(result.error || 'Gagal Login');

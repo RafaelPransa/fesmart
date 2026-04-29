@@ -73,7 +73,7 @@ app.get("/api/admin/players", async (req, res) => {
             FROM users u
             LEFT JOIN game_progress g ON u.id = g.user_id
             WHERE u.role = 'student'
-            ORDER BY g.updated_at DESC
+            ORDER BY u.created_at DESC, u.id DESC
         `;
     const result = await pool.query(query);
     res.json(result.rows);

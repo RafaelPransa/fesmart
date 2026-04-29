@@ -231,8 +231,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function init() {
-    if (hariTitle) hariTitle.textContent = 'Hari - 3';
-    if (openingSubtitle) openingSubtitle.innerHTML = '<i>Post-test</i>';
+    if (hariTitle) hariTitle.innerHTML = '<i>Post-test</i>';
+    if (openingSubtitle)
+      openingSubtitle.innerHTML = '<i>Post-test</i> berisikan 10 soal';
     if (currentDayBtn) currentDayBtn.textContent = '3';
 
     // Update character image
