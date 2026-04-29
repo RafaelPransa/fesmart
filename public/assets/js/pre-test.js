@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (btnRestart) {
     btnRestart.addEventListener('click', function () {
-      window.location.href = 'hari2.html';
+      window.location.href = 'percakapan.html';
     });
   }
 

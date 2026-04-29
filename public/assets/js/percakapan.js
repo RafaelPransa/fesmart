@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'fesmart_user_session',
         JSON.stringify({ ...userData, lastPlayedDay: 'Hari 2' }),
       );
-      window.location.href = 'hari3.html';
+      window.location.href = 'post-test.html';
     });
 
   init();

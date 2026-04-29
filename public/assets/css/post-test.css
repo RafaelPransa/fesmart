@@ -696,6 +696,7 @@ body {
   .character-game {
     width: 250px;
   }
+}
 
 @media (max-width: 576px) {
   .hari-review h3 {
