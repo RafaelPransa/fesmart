@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function typeWriter(lines, speed = 1, delay = 100) {
+  function typeWriter(lines, speed = 40, delay = 3000) {
     let lineIndex = 0;
     let charIndex = 0;
 
